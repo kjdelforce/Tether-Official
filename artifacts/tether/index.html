@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no, interactive-widget=resizes-content" />
+    <title>Tether</title>
+
+    <!-- PWA -->
+    <link rel="manifest" href="%BASE_URL%manifest.json" />
+    <meta name="theme-color" content="#000000" />
+    <meta name="mobile-web-app-capable" content="yes" />
+
+    <!-- iOS PWA -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Tether" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+    <!-- Standard favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="%BASE_URL%favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="%BASE_URL%icon-192.png" />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Quicksand:wght@400;500;600;700&family=Dancing+Script:wght@400;500;600;700&family=Caveat:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  </head>
+  <body>
+    <!--
+      Liquid Glass refraction filter — global definition.
+      Consumed via CSS:  backdrop-filter: blur(...) url(#liquid-refract);
+      Used by .glass-card, .glass-card-crimson, .glass-countdown, and
+      .glass-nav to give every pane a thick high-end-glass warp at its
+      edges, so content scrolling underneath appears refracted.
+
+      Implementation: a low-frequency fractalNoise feeds a small
+      Gaussian blur which feeds the displacement map.  Scale is
+      intentionally subtle (5–7px) to avoid breaking text legibility.
+    -->
+    <svg
+      aria-hidden="true"
+      style="position:absolute; width:0; height:0; overflow:hidden; pointer-events:none;"
+    >
+      <defs>
+        <filter id="liquid-refract" x="-12%" y="-12%" width="124%" height="124%" color-interpolation-filters="sRGB">
+          <feTurbulence
+            type="fractalNoise"
+            baseFrequency="0.012 0.018"
+            numOctaves="2"
+            seed="7"
+            result="noise"
+          />
+          <feGaussianBlur in="noise" stdDeviation="0.65" result="softNoise" />
+          <feDisplacementMap
+            in="SourceGraphic"
+            in2="softNoise"
+            scale="6"
+            xChannelSelector="R"
+            yChannelSelector="G"
+          />
+        </filter>
+      </defs>
+    </svg>
+
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

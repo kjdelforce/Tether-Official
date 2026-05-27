@@ -1,0 +1,2524 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@plugin "@tailwindcss/typography";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+  --color-card-border: hsl(var(--card-border));
+
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+  --color-popover-border: hsl(var(--popover-border));
+
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-primary-border: var(--primary-border);
+
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+  --color-secondary-border: var(--secondary-border);
+
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+  --color-muted-border: var(--muted-border);
+
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+  --color-accent-border: var(--accent-border);
+
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+  --color-destructive-border: var(--destructive-border);
+
+  --color-chart-1: hsl(var(--chart-1));
+  --color-chart-2: hsl(var(--chart-2));
+  --color-chart-3: hsl(var(--chart-3));
+  --color-chart-4: hsl(var(--chart-4));
+  --color-chart-5: hsl(var(--chart-5));
+
+  --color-sidebar: hsl(var(--sidebar));
+  --color-sidebar-foreground: hsl(var(--sidebar-foreground));
+  --color-sidebar-border: hsl(var(--sidebar-border));
+  --color-sidebar-primary: hsl(var(--sidebar-primary));
+  --color-sidebar-primary-foreground: hsl(var(--sidebar-primary-foreground));
+  --color-sidebar-primary-border: var(--sidebar-primary-border);
+  --color-sidebar-accent: hsl(var(--sidebar-accent));
+  --color-sidebar-accent-foreground: hsl(var(--sidebar-accent-foreground));
+  --color-sidebar-accent-border: var(--sidebar-accent-border);
+  --color-sidebar-ring: hsl(var(--sidebar-ring));
+
+  --font-sans: var(--app-font-sans);
+  --font-serif: var(--app-font-serif);
+  --font-mono: var(--app-font-mono);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+/* ── Full-screen flex chain — structural fix for the bottom gap ──────────
+ *
+ * The root cause of the black gap on mobile is that `100vh` is calculated
+ * from the initial viewport and does NOT adjust for browser chrome.
+ * `100dvh` (dynamic viewport height) adjusts correctly in all iOS Safari
+ * modes (browser, standalone PWA) and eliminates the gap structurally.
+ *
+ * The fix is a proper flex column chain from html → body → #root → .app-shell
+ * where every ancestor passes height down and every scroll container has
+ * min-height: 0 so it can shrink to fit the available space.
+ */
+html {
+  height: 100dvh;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  /* Liquid Glass — Global Contrast.  A near-black base
+   * ( #0a0a0f ) maximises the visible refraction and rim-light
+   * highlights on every glass element above it. */
+  background: #0a0a0f;
+}
+
+body {
+  height: 100dvh;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background: #0a0a0f;
+}
+
+/* ── iOS Input Zoom Fix ────────────────────────────────────────────
+ * Mobile Safari triggers an aggressive auto-zoom whenever a focused
+ * <input> / <textarea> / <select> renders text smaller than 16 px.
+ * The zoom-in often leaves the layout in a half-broken half-scrolled
+ * state on dismiss (the same family of bugs `useViewportFix` cleans
+ * up).  Setting a 16 px floor on every form control tells iOS the
+ * field is already at "comfortable reading size" so it skips the
+ * zoom entirely.  `max(16px, …)` preserves any larger custom size. */
+input,
+textarea,
+select {
+  font-size: max(16px, 1rem);
+}
+
+/* #root is the top of the flex chain.
+ * height + min-height: 100dvh — dvh adjusts for mobile browser chrome. */
+#root {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  min-height: 100dvh;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+  background-color: transparent;
+}
+
+/* Deep Navy Blue + Crimson Red theme */
+:root {
+  --button-outline: rgba(0,0,0, .10);
+  --badge-outline: rgba(0,0,0, .05);
+  --opaque-button-border-intensity: -8;
+  --elevate-1: rgba(0,0,0, .03);
+  --elevate-2: rgba(0,0,0, .08);
+
+  /* OLED True Black */
+  --background: 0 0% 0%;
+  --foreground: 210 40% 96%;
+
+  --border: 218 40% 35%;
+  --input: 218 40% 35%;
+  --ring: 0 72% 51%;
+
+  --card: 218 55% 18%;
+  --card-foreground: 210 40% 96%;
+  --card-border: 218 40% 30%;
+
+  --popover: 218 55% 18%;
+  --popover-foreground: 210 40% 96%;
+  --popover-border: 218 40% 30%;
+
+  --primary: 0 72% 51%;
+  --primary-foreground: 0 0% 100%;
+
+  --secondary: 218 45% 32%;
+  --secondary-foreground: 210 40% 90%;
+
+  --muted: 218 45% 28%;
+  --muted-foreground: 213 30% 70%;
+
+  --accent: 218 45% 32%;
+  --accent-foreground: 210 40% 96%;
+
+  --destructive: 0 72% 51%;
+  --destructive-foreground: 0 0% 100%;
+
+  --sidebar: 218 65% 15%;
+  --sidebar-foreground: 210 40% 96%;
+  --sidebar-border: 218 40% 25%;
+  --sidebar-primary: 0 72% 51%;
+  --sidebar-primary-foreground: 0 0% 100%;
+  --sidebar-accent: 218 50% 25%;
+  --sidebar-accent-foreground: 210 40% 90%;
+  --sidebar-ring: 0 72% 51%;
+
+  --chart-1: 0 72% 51%;
+  --chart-2: 213 50% 60%;
+  --chart-3: 218 61% 40%;
+  --chart-4: 0 60% 70%;
+  --chart-5: 213 30% 70%;
+
+  --app-font-sans: 'Inter', system-ui, sans-serif;
+  --app-font-serif: 'Playfair Display', Georgia, serif;
+  --app-font-mono: Menlo, monospace;
+  --radius: .75rem;
+
+  --shadow-2xs: 0 1px 2px rgba(0,0,0,0.3);
+  --shadow-xs: 0 1px 3px rgba(0,0,0,0.3);
+  --shadow-sm: 0 2px 4px rgba(0,0,0,0.3);
+  --shadow: 0 4px 8px rgba(0,0,0,0.3);
+  --shadow-md: 0 6px 12px rgba(0,0,0,0.3);
+  --shadow-lg: 0 10px 20px rgba(0,0,0,0.4);
+  --shadow-xl: 0 16px 32px rgba(0,0,0,0.4);
+  --shadow-2xl: 0 24px 48px rgba(0,0,0,0.5);
+  --tracking-normal: 0em;
+  --spacing: 0.25rem;
+
+  --primary-border: hsl(from hsl(var(--primary)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
+  --secondary-border: hsl(from hsl(var(--secondary)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
+  --muted-border: hsl(from hsl(var(--muted)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
+  --accent-border: hsl(from hsl(var(--accent)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
+  --destructive-border: hsl(from hsl(var(--destructive)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
+  --sidebar-primary-border: hsl(from hsl(var(--sidebar-primary)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
+  --sidebar-accent-border: hsl(from hsl(var(--sidebar-accent)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html, body {
+    overscroll-behavior: none;
+    overflow: hidden;
+  }
+
+  body {
+    @apply font-sans antialiased bg-background text-foreground;
+    /* Body text line-height raised 1.2× (1.4 → 1.68) for breathing room */
+    line-height: 1.68;
+  }
+}
+
+@layer utilities {
+  input[type="search"]::-webkit-search-cancel-button {
+    @apply hidden;
+  }
+
+  [contenteditable][data-placeholder]:empty::before {
+    content: attr(data-placeholder);
+    color: hsl(var(--muted-foreground));
+    pointer-events: none;
+  }
+
+  .no-default-hover-elevate {}
+  .no-default-active-elevate {}
+
+  .toggle-elevate::before,
+  .toggle-elevate-2::before {
+    content: "";
+    pointer-events: none;
+    position: absolute;
+    inset: 0px;
+    border-radius: inherit;
+    z-index: -1;
+  }
+
+  .toggle-elevate.toggle-elevated::before {
+    background-color: var(--elevate-2);
+  }
+
+  .border.toggle-elevate::before {
+    inset: -1px;
+  }
+
+  .hover-elevate:not(.no-default-hover-elevate),
+  .active-elevate:not(.no-default-active-elevate),
+  .hover-elevate-2:not(.no-default-hover-elevate),
+  .active-elevate-2:not(.no-default-active-elevate) {
+    position: relative;
+    z-index: 0;
+  }
+
+  .hover-elevate:not(.no-default-hover-elevate)::after,
+  .active-elevate:not(.no-default-active-elevate)::after,
+  .hover-elevate-2:not(.no-default-hover-elevate)::after,
+  .active-elevate-2:not(.no-default-active-elevate)::after {
+    content: "";
+    pointer-events: none;
+    position: absolute;
+    inset: 0px;
+    border-radius: inherit;
+    z-index: 999;
+  }
+
+  .hover-elevate:hover:not(.no-default-hover-elevate)::after,
+  .active-elevate:active:not(.no-default-active-elevate)::after {
+    background-color: var(--elevate-1);
+  }
+
+  .hover-elevate-2:hover:not(.no-default-hover-elevate)::after,
+  .active-elevate-2:active:not(.no-default-active-elevate)::after {
+    background-color: var(--elevate-2);
+  }
+
+  .border.hover-elevate:not(.no-hover-interaction-elevate)::after,
+  .border.active-elevate:not(.no-active-interaction-elevate)::after,
+  .border.hover-elevate-2:not(.no-hover-interaction-elevate)::after,
+  .border.active-elevate-2:not(.no-active-interaction-elevate)::after {
+    inset: -1px;
+  }
+}
+
+/* ── Smooth-scroll container ─────────────────────────────────── */
+.tether-scroll {
+  overflow-y: scroll;                /* scroll (not auto) = always momentum on iOS */
+  overflow-x: hidden;
+  overscroll-behavior-y: contain;    /* stop bounce leaking to parent / body       */
+  /* touch-action: pan-y lets the browser own vertical panning, but we MUST NOT
+   * set this when we also call e.preventDefault() in our non-passive touchmove
+   * handler — the browser ignores preventDefault() when touch-action is set,
+   * making pull-to-refresh unreliable. We manage vertical panning manually. */
+  touch-action: pan-y;
+  -webkit-overflow-scrolling: touch; /* legacy iOS momentum (pre-13)               */
+  /* height: 100% is the critical property — without a constrained height the div
+   * expands to fit its content and overflow-y:scroll never fires, so there is
+   * no scroll container and content is silently clipped by the parent. */
+  height: 100%;
+  /* min-height: 0 — critical for flex children: without it a flex item refuses
+   * to shrink below its content size, so overflow never triggers. */
+  min-height: 0;
+  /* Floating dock nav: bottom = max(14px, env+10px) + pill height (~54px)
+   * + extra breathing room so last card scrolls fully into view. */
+  padding-bottom: calc(86px + env(safe-area-inset-bottom, 0px));
+}
+
+/* Vibe picker scrollable list — scroll isolation on iOS/Android */
+.vibe-picker-scroll {
+  overflow-y: scroll;                /* always-on scroll track for momentum */
+  overscroll-behavior: contain;      /* prevent rubber-band leaking to parent */
+  touch-action: pan-y;               /* browser owns vertical panning here    */
+  -webkit-overflow-scrolling: touch; /* legacy iOS <13 momentum              */
+  will-change: scroll-position;
+  /* Promote to own composite layer so fixed parent doesn't trap events */
+  transform: translateZ(0);
+}
+
+/* ── Smoked Glass — global surface treatment ──────────────────────
+ * Standardized on a dark, semi-transparent base with high-intensity
+ * background blurring.  Each surface also carries a "Global Light
+ * Source": a 1px top-left rim light and a bottom-right deep shadow,
+ * simulating physical thickness.
+ */
+/* ═══════════════════════════════════════════════════════════════════
+ * Liquid Glass — Hyper-Realistic Rim Lighting
+ *
+ * Every pane uses the gradient-border trick: a transparent 1 px
+ * border is filled by a conic-gradient that runs bright white at
+ * the top-left → deep indigo at the bottom-right.  This sells the
+ * "global light source above & behind the user" reading.  An inset
+ * `0 1px 1px rgba(255,255,255,0.30)` adds the specular glint along
+ * the very top edge — the thin highlight you see on real glass.
+ *
+ * The interior fill is layered on top of the same backdrop-filter
+ * so the smoked-glass blur is preserved.
+ * ═══════════════════════════════════════════════════════════════════ */
+
+/* ── DUAL-LAYER GLASS RIM (spec) ───────────────────────────────────
+ *   Layer 1: a uniform 1.5 px white border at 0.2 opacity
+ *   Layer 2: a 0.5 px sharp pure-white "specular glint" pinned to the
+ *            top-left corner via an inset box-shadow with positive
+ *            x AND positive y offsets — physically the highlight you
+ *            see where a directional light first catches a glass edge.
+ * The bottom-right inset shadow + ambient drop shadow stay for depth. */
+/* ── Clean Edge Physics — Dual-Layer Rim Light ─────────────────────
+ * No more dark edge strokes anywhere.  Every glass surface now wears
+ * the same two-layer rim that real polished glass shows under a
+ * soft top-left key light:
+ *
+ *   • Outer (1 px gradient border) — `linear-gradient(to bottom right,
+ *     rgba(255,255,255,0.4), rgba(255,255,255,0))` painted via
+ *     border-box so it rounds with `border-radius`.  Bright on the TL
+ *     edge, fading to nothing at BR.
+ *
+ *   • Inner (1.5 px inset white) — `inset 0 0 0 1.5px rgba(255,255,255,0.1)`
+ *     simulates the thickness of the glass plate as a soft inner
+ *     bevel that catches scattered light from inside the volume.
+ *
+ * Backdrop blur is bumped to 50 px (Depth Consolidation) so colours
+ * scrolling underneath read as visibly dense / heavy through the
+ * glass rather than just frosted.  The grounding drop shadow stays
+ * at low opacity to keep the card floating off the page without
+ * drawing a hard black edge. */
+/* `.glass-card` is preserved as a backwards-compatible alias for
+ * `.lg-surface-primary` so all existing JSX continues to render
+ * identically.  New code should prefer `.lg-surface-primary`. */
+.glass-card {
+  position: relative;
+  background:
+    linear-gradient(var(--lg-glass-primary), var(--lg-glass-primary)) padding-box,
+    linear-gradient(135deg, var(--lg-glass-highlight) 0%, rgba(255, 255, 255, 0) 100%) border-box;
+  backdrop-filter: blur(var(--lg-blur-strong)) saturate(160%);
+  -webkit-backdrop-filter: blur(var(--lg-blur-strong)) saturate(160%);
+  border: 1px solid transparent;
+  box-shadow:
+    inset 0 0 0 1.5px rgba(255, 255, 255, 0.10),  /* glass-plate thickness */
+    var(--lg-shadow-elevated);                     /* floating depth */
+}
+
+.glass-card-crimson {
+  position: relative;
+  background:
+    linear-gradient(rgba(60, 12, 18, 0.55), rgba(60, 12, 18, 0.55)) padding-box,
+    linear-gradient(135deg, rgba(255, 220, 220, 0.40) 0%, rgba(255, 255, 255, 0) 100%) border-box;
+  backdrop-filter: blur(50px) saturate(170%);
+  -webkit-backdrop-filter: blur(50px) saturate(170%);
+  border: 1px solid transparent;
+  box-shadow:
+    inset 0 0 0 1.5px rgba(255, 255, 255, 0.10),
+    0 12px 36px rgba(0, 0, 0, 0.28),
+    0 0 28px rgba(197, 48, 48, 0.18);             /* crimson aura, no hard edge */
+}
+
+/* ── Refraction edge overlay ──────────────────────────────────────
+ * A pseudo-element donut hugging each glass pane's perimeter.  The
+ * `mask-composite: exclude` trick subtracts the inner content-box
+ * from the outer border-box, leaving only a 14 px ring.  Inside
+ * that ring we stack an extra `backdrop-filter: blur(...)` plus the
+ * SVG `#liquid-refract` displacement — so content scrolling
+ * underneath is visibly warped at the glass's edge, exactly the
+ * way thick high-end glass behaves in real life.
+ *
+ * Reusable: any element can opt in by adding the `.liquid-refract-edge`
+ * class — used on the Love You orb for the same warped-rim physics.
+ *
+ * Browsers without `backdrop-filter: url()` support (Safari today)
+ * still get the extra rim blur; the warp degrades silently. */
+.glass-card::after,
+.glass-card-crimson::after,
+.glass-countdown::after,
+.glass-nav::after,
+.liquid-refract-edge::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  border: 14px solid transparent;
+  box-sizing: border-box;
+  backdrop-filter: blur(3px) url(#liquid-refract);
+  -webkit-backdrop-filter: blur(3px);
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+          mask-composite: exclude;
+  z-index: 6;
+}
+
+.liquid-refract-edge { position: relative; }
+
+/* ── Typography Clarity ────────────────────────────────────────────
+ * The previous heavy `0 4px 12px rgba(0,0,0,0.6)` shadow made copy
+ * look painted onto the glass.  Per the new spec, white text should
+ * appear to FLOAT above the glass surface — a very soft, larger-blur,
+ * lower-opacity shadow does this without anchoring the glyphs to the
+ * substrate.  Halve the offset, double the blur, drop the alpha. */
+.text-spatial,
+body {
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.30);
+}
+
+/* SPEC — Premium Typography: tightened tracking on every heading.
+ * −0.5 px is the tracking Apple uses on SF Pro display sizes; it
+ * pulls the glyphs together just enough to read as expensive
+ * editorial typography rather than generic web text. */
+h1, h2, h3, h4, h5, h6 {
+  letter-spacing: -0.5px;
+}
+
+/* ── Liquid Glass Dock — Tunable Tokens ───────────────────────────
+ * Every visual property of the dock pill is exposed here as a CSS
+ * custom property so values can be tuned in one place without
+ * having to re-derive the multi-layer background stack.  Override
+ * any of these on `.glass-nav` (or a wrapping theme class) to
+ * re-skin the dock for a light substrate, brand colour, etc. */
+:root {
+  --dock-blur:           60px;                              /* backdrop blur radius — softer melt per final-polish spec */
+  --dock-saturate:       1.35;                              /* backdrop saturation lift */
+  --dock-brightness:     1.30;                              /* backdrop brightness lift */
+  --dock-bg-top:         rgba(255, 255, 255, 0.16);         /* body-tint colour, top */
+  --dock-bg-bottom:      rgba(255, 255, 255, 0.08);         /* body-tint colour, bottom */
+  --dock-sheen:          rgba(255, 255, 255, 0.06);         /* unifying milky sheen */
+  --dock-rim-top:        rgba(255, 255, 255, 0.55);         /* gradient stroke, top edge */
+  --dock-rim-bottom:     rgba(255, 255, 255, 0.10);         /* gradient stroke, bottom edge */
+  --dock-radius:         40px;                              /* corner roundness */
+  --dock-noise-opacity:  0.45;                              /* grain blend strength */
+  --dock-inner-glow:     rgba(255, 255, 255, 0.10);         /* inset white volumetric glow */
+  --dock-edge-top:       rgba(255, 255, 255, 0.55);         /* bright top hairline */
+  --dock-edge-bottom:    rgba(0,   0,   0,   0.22);         /* dark bottom hairline (deepened for depth) */
+  --dock-top-highlight:  rgba(255, 255, 255, 0.20);         /* top-edge highlight band, ~12 % brighter than fill */
+  --dock-shadow-close:   0  4px 12px rgba(0, 0, 0, 0.22);   /* close contact shadow */
+  --dock-shadow-ambient: 0 36px 96px rgba(0, 0, 0, 0.20);   /* wider, softer, lower glow per spec */
+
+  /* ── Active-Pill Tokens ─────────────────────────────────────────
+   * The Liquid-Glass bubble that marks the active tab.  Sits on a
+   * dedicated z-plane above the dock glass and uses a denser
+   * backdrop chain so the active item visibly "lifts" out of the
+   * surrounding pill.  All values are exposed as variables so the
+   * pill can be retuned without editing the inline style block in
+   * <DraggableNavBubble>. */
+  --active-pill-blur:           calc(var(--dock-blur) * 1.5);  /* 1.5 × dock blur per spec */
+  --active-pill-saturate:       2.0;                           /* stronger colour transmission */
+  --active-pill-brightness:     1.28;                          /* brighter than dock substrate */
+  --active-pill-contrast:       1.10;                          /* slight contrast lift */
+  --active-pill-bg:             rgba(255, 255, 255, 0.34);     /* opaque-ish white — clearly brighter than dock */
+  --active-pill-radius:         19px;                          /* close to half pill height (~38 px) → fully rounded ends */
+  --active-pill-tx-duration:    240ms;                         /* in spec 200–260 ms band */
+  --active-pill-tx-ease:        cubic-bezier(0.34, 1.56, 0.64, 1);
+  --active-pill-top-highlight:  rgba(255, 255, 255, 0.55);     /* peak white of the top-highlight strip */
+  --active-rainbow-opacity:     0.30;                          /* refraction-halo overall strength on the left edge */
+
+  /* ════════════════════════════════════════════════════════════════
+   * LIQUID GLASS — Global Design Tokens (`--lg-*`)
+   * ════════════════════════════════════════════════════════════════
+   * The single source of truth for the entire app's Liquid Glass
+   * surface system.  Components and screens consume these tokens
+   * via the `.lg-surface-*` utility classes (defined further down)
+   * or by reading the variables directly.  Override on a wrapping
+   * theme class to retune the whole UI in one place.
+   *
+   * Naming convention:
+   *   --lg-bg-*        page-level background gradient
+   *   --lg-glass-*     fill colours of glass surfaces
+   *   --lg-blur-*      backdrop-filter blur radii (weak / medium / strong)
+   *   --lg-radius-*    matched border-radius scale (xs / sm / md / lg / xl)
+   *   --lg-shadow-*    floating shadows (soft / elevated)
+   *   --lg-text-*      body/heading text colours on glass
+   *   --lg-accent-*    brand accent colours (primary / danger / success)
+   * ──────────────────────────────────────────────────────────────── */
+
+  /* ── Background gradient (consumed by `.animated-bg-layer`) ───── */
+  --lg-bg-gradient: linear-gradient(
+    -45deg,
+    #0a0a0f 0%,
+    #14233f 22%,
+    #340a0a 45%,
+    #0a0a0f 65%,
+    #2a0808 82%,
+    #0a0a0f 100%
+  );
+
+  /* ── Glass fill colours ───────────────────────────────────────── */
+  --lg-glass-primary:    rgba(15, 15, 20, 0.55);   /* main cards & key panels */
+  --lg-glass-secondary:  rgba(22, 22, 30, 0.38);   /* headers, banners, toolbars */
+  --lg-glass-chip:       rgba(28, 28, 38, 0.32);   /* chips, small info modules */
+  --lg-glass-highlight:  rgba(255, 255, 255, 0.40); /* specular rim & inner glow */
+
+  /* ── Backdrop blur scale ──────────────────────────────────────── */
+  --lg-blur-weak:    20px;   /* chips, banners — preserve content readability */
+  --lg-blur-medium:  36px;   /* secondary surfaces */
+  --lg-blur-strong:  60px;   /* primary cards — full Liquid Glass density */
+
+  /* ── Border-radius scale ──────────────────────────────────────── */
+  --lg-radius-xs:  6px;    /* pills inside chips */
+  --lg-radius-sm:  10px;   /* small buttons, badges */
+  --lg-radius-md:  14px;   /* secondary surfaces */
+  --lg-radius-lg:  20px;   /* primary cards */
+  --lg-radius-xl:  28px;   /* hero panels & overlays */
+
+  /* ── Floating shadows ─────────────────────────────────────────── */
+  --lg-shadow-soft:
+    0  4px 12px rgba(0, 0, 0, 0.18),
+    0 12px 32px rgba(0, 0, 0, 0.22);                              /* secondary surfaces */
+  --lg-shadow-elevated:
+    0  6px 18px rgba(0, 0, 0, 0.25),
+    0 24px 64px rgba(0, 0, 0, 0.32);                              /* floating primary cards */
+
+  /* ── Text colours on glass (all clear AA on the dark background) */
+  --lg-text-primary:    rgba(255, 255, 255, 0.96);   /* headings, main content */
+  --lg-text-secondary:  rgba(228, 232, 240, 0.78);   /* body text */
+  --lg-text-muted:      rgba(196, 204, 220, 0.58);   /* captions, helper text */
+
+  /* ── Brand accents (preserved from existing crimson palette) ──── */
+  --lg-accent-primary:  #C53030;   /* Tether crimson — primary CTA & active states */
+  --lg-accent-danger:   #DC2626;   /* destructive actions, error states */
+  --lg-accent-success:  #14B8A6;   /* confirmations, success states */
+}
+
+.glass-nav {
+  /* ── iOS 26 Liquid Glass Dock — Multi-Layer Crystal ────────────
+   * The dock is built from FOUR discrete glass plies stacked on
+   * top of the backdrop blur, exactly as a real pane of layered
+   * glass refracts light.  Reading top → bottom in the visual
+   * stack:
+   *
+   *   1.  Grain    — A tiny SVG fractal-noise texture (alpha-only
+   *                  white grain) repeated as a 160 × 160 tile,
+   *                  rendered into a `::after` pseudo with
+   *                  `mix-blend-mode: soft-light` so it modulates
+   *                  the underlying glass ON A PIXEL LEVEL rather
+   *                  than sitting on top as a flat alpha overlay.
+   *   2.  Sheen    — A flat `var(--dock-sheen)` overlay so the
+   *                  pill always carries a unifying milky cast
+   *                  regardless of what's underneath.
+   *   3.  Body tint — A vertical white gradient
+   *                  (`--dock-bg-top` → `--dock-bg-bottom`) for
+   *                  the characteristic frosted-glass body colour.
+   *   4.  Rim      — A 1 px gradient border, brighter on top
+   *                  (`--dock-rim-top`) than bottom
+   *                  (`--dock-rim-bottom`), painted via the
+   *                  border-box slot so it rounds with `--dock-radius`.
+   *
+   * Backdrop chain:  blur + brightness + saturate, all driven by
+   * the `--dock-blur` / `--dock-brightness` / `--dock-saturate`
+   * tokens for one-line tuning.
+   *
+   * Inner shadows add: bright top edge, dark bottom edge, a 24 px
+   * inner white glow for soft volumetric scatter inside the glass,
+   * and a 1 px inset white plate for thickness.  Outer shadows
+   * (close contact + wide ambient) make the dock float above the
+   * page rather than sitting glued to it. */
+  position: fixed;
+  bottom: 40px !important;
+  left:    7%  !important;
+  width:   86% !important;
+  max-width: 520px;
+  margin: 0;
+  overflow: visible;
+  border-radius: var(--dock-radius);
+
+  padding-top: 2px;
+  padding-bottom: 2px;
+
+  background:
+    /* (1) Top-highlight band — fades from `--dock-top-highlight` at
+     *     y=0 to transparent by y=35%, giving the dock a clear bright
+     *     band along the top edge that reads ~12 % brighter than the
+     *     body fill (matches the iOS-26 reference). */
+    linear-gradient(180deg, var(--dock-top-highlight) 0%, transparent 35%) padding-box,
+    /* (2) Unifying milky sheen. */
+    linear-gradient(var(--dock-sheen), var(--dock-sheen)) padding-box,
+    /* (3) Body tint. */
+    linear-gradient(180deg, var(--dock-bg-top) 0%, var(--dock-bg-bottom) 100%) padding-box,
+    /* (4) Rim — top brighter than bottom. */
+    linear-gradient(180deg, var(--dock-rim-top) 0%, var(--dock-rim-bottom) 100%) border-box;
+
+  backdrop-filter:         blur(var(--dock-blur)) brightness(var(--dock-brightness)) saturate(var(--dock-saturate));
+  -webkit-backdrop-filter: blur(var(--dock-blur)) brightness(var(--dock-brightness)) saturate(var(--dock-saturate));
+  border: 1px solid transparent;
+  box-shadow:
+    inset 0  1px 0   var(--dock-edge-top),    /* top edge — bright reflective highlight */
+    inset 0 -1px 0   var(--dock-edge-bottom), /* bottom edge — depth contrast (darker) */
+    inset 0  0  24px var(--dock-inner-glow),  /* inner white glow */
+    inset 0  0  0 1px var(--dock-inner-glow), /* glass-plate thickness */
+    var(--dock-shadow-close),                 /* close contact shadow */
+    var(--dock-shadow-ambient);               /* wide ambient float shadow */
+
+  /* Whole-dock parallax — the pill sways ±2 px / ±1 px opposite the
+   * cursor (driven by `--dock-tx` / `--dock-ty` written from JS).
+   * `translateZ(0)` keeps the layer GPU-composited; the
+   * cubic-bezier on transform overshoots slightly so the press-squish
+   * still rebounds with the iOS-pill spring feel. */
+  transform: translate3d(var(--dock-tx, 0px), var(--dock-ty, 0px), 0) scale(1);
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  will-change: transform;
+  z-index: 50;
+}
+
+/* (4) Grain layer — soft-light noise on a dedicated pseudo so it
+ * blends into the glass at the pixel level, not as a flat overlay.
+ * Sits below the cursor sheen (`.glass-nav::before`, z=1) and the
+ * icons (z=1) at z=0 — but because it's a positioned pseudo it
+ * still paints atop the multi-layer background stack. */
+.glass-nav::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background-image:
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.55'/></svg>");
+  background-size: 160px 160px;
+  background-repeat: repeat;
+  mix-blend-mode: soft-light;
+  opacity: var(--dock-noise-opacity);
+  z-index: 0;
+}
+
+/* When any tab inside the dock is being pressed, the entire pill
+ * bulges 2.5 % toward the finger, then springs back via the
+ * transition above when the press is released. */
+.glass-nav:has(button:active) {
+  transform: translate3d(var(--dock-tx, 0px), var(--dock-ty, 0px), 0) scale(1.025);
+}
+
+/* ── Active Pill — Hover Sheen Sweep ──────────────────────────────
+ * A slim diagonal white-to-transparent strip that sweeps across the
+ * Liquid-Glass bubble on desktop hover.  Companion to the React-
+ * driven tab-change sheen rendered inside <DraggableNavBubble>;
+ * together they cover both trigger conditions per the brief.
+ *
+ * `:hover` runs the keyframe at 720 ms ease-out — a single sweep
+ * triggered by the mouse cursor entering the bubble.  Opacity peaks
+ * at 0.45 mid-sweep and fades back to 0, so you read it as a
+ * passing reflection of light, not a UI animation. */
+.bubble-sheen-hover {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  overflow: hidden;
+  opacity: 0;
+}
+.liquid-glass-bubble:hover .bubble-sheen-hover {
+  animation: bubble-sheen-sweep 720ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+@keyframes bubble-sheen-sweep {
+  0%   { transform: translateX(-110%); opacity: 0;    background: linear-gradient(105deg, transparent 35%, rgba(255,255,255,0.45) 50%, transparent 65%); }
+  50%  { opacity: 0.55; }
+  100% { transform: translateX(110%);  opacity: 0;    background: linear-gradient(105deg, transparent 35%, rgba(255,255,255,0.45) 50%, transparent 65%); }
+}
+
+/* ── Dock Icons — Z-Depth + Parallax ──────────────────────────────
+ * Each NavTab button gets two depth treatments:
+ *
+ *   1. `filter: drop-shadow(...)` casts a soft dark shadow behind
+ *      the icon glyph, so the icon reads as sitting a couple of mm
+ *      ABOVE the glass plate, not embedded in it.  We use `filter`
+ *      instead of `box-shadow` because emoji glyphs don't have a
+ *      box — drop-shadow follows the actual rendered alpha.
+ *
+ *   2. `transform: translate3d(var(--nav-px), var(--nav-py), 0)`
+ *      drives the cursor-tracked parallax — icons drift up to ±5 px
+ *      OPPOSITE the cursor, while the glass pill itself stays put.
+ *      The relative motion between the pill and the icons inside it
+ *      sells the depth: viewers read the icons as sitting on a
+ *      deeper plane behind the glass surface.
+ *
+ * Transition makes the parallax feel "floaty" rather than rigid. */
+.glass-nav > button {
+  filter:
+    drop-shadow(0 1px 1px rgba(0, 0, 0, 0.40))
+    drop-shadow(0 2px 4px rgba(0, 0, 0, 0.20));
+  transform: translate3d(var(--nav-px, 0px), var(--nav-py, 0px), 0);
+  transition:
+    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    filter    0.18s cubic-bezier(0.22, 1, 0.36, 1);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  will-change: transform, filter;
+}
+/* Desktop hover — under-shadow deepens for an extra hint of lift,
+ * matching the 1.06 scale already applied via Framer's whileHover.
+ * 180 ms ease-out, no spring (per spec — "no bounce"). */
+.glass-nav > button:hover {
+  filter:
+    drop-shadow(0 2px 3px rgba(0, 0, 0, 0.50))
+    drop-shadow(0 4px 8px rgba(0, 0, 0, 0.28));
+}
+
+/* ── Specular Glints — almost-invisible polish ────────────────────
+ * Per spec: a persistent, static 45° diagonal sheen at
+ * `rgba(255,255,255,0.03)` — barely perceptible on its own, but
+ * lifts every glass surface from "matte frosted" to "polished
+ * crystal" the moment your eye slides across it.  No gyro, no
+ * scroll-tracking, no blend mode tricks; just a fixed gradient. */
+.glass-card::before,
+.glass-card-crimson::before,
+.glass-countdown::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background-image: linear-gradient(
+    45deg,
+    rgba(255, 255, 255, 0)    35%,
+    rgba(255, 255, 255, 0.03) 50%,
+    rgba(255, 255, 255, 0)    65%
+  );
+  z-index: 1;
+}
+
+/* ── Dock — Idle Light-Refraction Shimmer ─────────────────────────
+ * A slow, autonomous drift of a soft chromatic gradient across
+ * the inside of the glass — simulates light refracting through
+ * a real lens as ambient room light shifts.  Lives on a dedicated
+ * `.glass-shimmer` div (first child of <nav>) so it can carry its
+ * own pseudo with its own animation without colliding with the
+ * cursor-tracked spotlight on `.glass-nav::before`.
+ *
+ * Design choices:
+ *   • The chromatic stops (warm-white → cool-blue → warm-pink)
+ *     mimic the rainbow flare you see when light passes through
+ *     a slightly imperfect prism — exactly the cue Apple's Liquid
+ *     Glass uses to suggest material thickness without having to
+ *     render a full prism.
+ *   • 16 s ease-in-out alternate cycle is slow enough to read
+ *     as "ambient drift," not as "moving animation."  Faster than
+ *     20 s and the eye starts tracking it; slower than 12 s and
+ *     you stop perceiving the shift entirely.
+ *   • `mix-blend-mode: screen` adds the colour ON TOP of whatever
+ *     is underneath rather than replacing it — so the chromatic
+ *     hint reads as light bleeding through the glass, not as a
+ *     coloured tint painted on the surface.
+ *   • Total opacity 0.55 keeps each chromatic stop at the
+ *     "barely perceptible" level you only register subconsciously. */
+.glass-shimmer {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+  opacity: 0.55;
+  mix-blend-mode: screen;
+}
+.glass-shimmer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -120%;
+  width: 340%;
+  height: 100%;
+  background: linear-gradient(
+    105deg,
+    transparent                        0%,
+    rgba(255, 245, 230, 0.06)         18%,
+    rgba(200, 220, 255, 0.10)         42%,
+    rgba(255, 235, 245, 0.10)         62%,
+    rgba(220, 255, 240, 0.07)         82%,
+    transparent                      100%
+  );
+  animation: liquid-shimmer-drift 16s ease-in-out infinite alternate;
+}
+@keyframes liquid-shimmer-drift {
+  from { transform: translateX(0%); }
+  to   { transform: translateX(35%); }
+}
+
+/* ── Reduced-Motion Overrides ─────────────────────────────────────
+ * When the user has requested reduced motion in their OS settings,
+ * silence every autonomous / hover animation on the dock so no
+ * movement happens unless the user explicitly initiates it (i.e. a
+ * tab change still snaps, but nothing animates spontaneously).
+ *
+ *   • Idle chromatic shimmer  → frozen
+ *   • Whole-dock parallax sway → no transition
+ *   • Icon parallax            → no transition
+ *   • Hover sheen sweep        → no animation
+ *   • Bubble press transitions → still allowed (initiated by user)
+ *
+ * The JS-side reduced-motion guard inside `AppShell` also short-
+ * circuits the rAF loop so the parallax custom properties never
+ * change in the first place. */
+@media (prefers-reduced-motion: reduce) {
+  .glass-shimmer::before {
+    animation: none;
+  }
+  .glass-nav,
+  .glass-nav > button {
+    transition: none;
+  }
+  .liquid-glass-bubble:hover .bubble-sheen-hover {
+    animation: none;
+  }
+}
+
+/* ── Dock — Moving Specular Highlight ─────────────────────────────
+ * Replaces the static 45° glint on the nav with a soft radial
+ * spotlight that tracks the cursor / touch position via the
+ * `--nav-mx` / `--nav-my` custom properties (set from JS each
+ * pointermove, lerped via rAF so the spotlight glides).
+ *
+ * The first stop's opacity is intentionally low (0.14) — premium
+ * iOS glass never "shines hard"; you should only notice the sheen
+ * once your eye has been on the dock for a beat.  The 50 % fade
+ * radius gives the highlight a soft halo with no visible edge. */
+.glass-nav::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      circle at var(--nav-mx, 50%) var(--nav-my, -20%),
+      rgba(255, 255, 255, 0.14) 0%,
+      rgba(255, 255, 255, 0.05) 22%,
+      rgba(255, 255, 255, 0)    50%
+    );
+  z-index: 1;
+}
+
+/* ── Spatial Card — INERT WRAPPER ────────────────────────────────
+ * Tilt physics removed.  The class is kept so existing
+ * `<SpatialCard>` call-sites (HomePage carousels, ProfilePage card)
+ * still render with the right padding and overflow behaviour, but
+ * no transform / perspective / will-change is applied — the card
+ * sits perfectly flat. */
+.spatial-card {
+  overflow: hidden;
+}
+
+/* ── Spatial shimmer — static polish overlay ──────────────────────
+ * Replaces the old gyro-driven shimmer with a fixed, very soft
+ * diagonal sheen so SpatialCard children still get a subtle
+ * polished read. */
+.spatial-shimmer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  background-image: linear-gradient(
+    45deg,
+    rgba(255, 255, 255, 0)    35%,
+    rgba(255, 255, 255, 0.04) 50%,
+    rgba(255, 255, 255, 0)    65%
+  );
+  z-index: 4;
+}
+
+/* ── Liquid Glass active bubble ─────────────────────────────────────
+ * Protrudes above the pill; contains an animated oval glint and a
+ * layered gradient fill to simulate a real glass sphere.
+ * Applied via className="liquid-glass-bubble" on the motion.div. */
+.liquid-glass-bubble {
+  overflow: visible;
+  position: relative;
+}
+
+/* ── Top highlight strip ────────────────────────────────────────
+ * A bright white-to-transparent band clipped to the top ~38 % of
+ * the bubble.  Reads as a sharp specular reflection of room light
+ * across the top edge — the single most important cue that this is
+ * GLASS and not plastic.  Opacity transitions on hover via the
+ * `:hover` rule below for the "the top highlight gets brighter"
+ * polish behaviour. */
+.liquid-glass-bubble::before {
+  content: '';
+  position: absolute;
+  inset: 1px 1px auto 1px;       /* 1 px inset all around so it sits inside the rim */
+  height: 38%;
+  border-radius: calc(var(--active-pill-radius) - 1px) calc(var(--active-pill-radius) - 1px) 0 0;
+  background: linear-gradient(
+    180deg,
+    var(--active-pill-top-highlight) 0%,
+    rgba(255, 255, 255, 0.18)        45%,
+    rgba(255, 255, 255, 0.00)        100%
+  );
+  pointer-events: none;
+  opacity: 0.85;
+  transition: opacity 200ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  z-index: 2;
+}
+
+/* ── Rainbow refraction halo (left edge) ───────────────────────
+ * A heavily-blurred, low-opacity multi-colour gradient offset just
+ * outside the bubble's left rim, mimicking the chromatic light
+ * dispersion you see at the edge of real curved glass.  The colours
+ * are very desaturated and the opacity is gated by
+ * `--active-rainbow-opacity` so the effect reads as "premium
+ * refraction", never as a neon rim.  Sits BEHIND the bubble's lens
+ * content (negative z-index) so the bubble's own rim lighting
+ * reads on top of it. */
+.liquid-glass-bubble::after {
+  content: '';
+  position: absolute;
+  top:    -8px;
+  bottom: -8px;
+  left:   -16px;
+  width:  32px;
+  border-radius: 16px;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 110, 110, 0.55) 0%,
+    rgba(255, 220,  90, 0.55) 35%,
+    rgba(120, 200, 255, 0.55) 70%,
+    rgba(180, 130, 255, 0.55) 100%
+  );
+  filter: blur(14px) saturate(1.3);
+  opacity: var(--active-rainbow-opacity);
+  pointer-events: none;
+  mix-blend-mode: screen;
+  /* No z-index: the halo lives in the bubble's own stacking context
+   * with default order, so its blurred bloom can bleed inward across
+   * the bubble's left rim (refraction inside the glass) while still
+   * being visible to the left of the pill. */
+  transition: opacity 200ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* ── Hover polish ──────────────────────────────────────────────
+ * Per spec: 180–220 ms smooth-spring transition.  Brightens the
+ * top-highlight strip and lifts the rainbow halo, plus expands
+ * the outer ambient halo via box-shadow so the pill feels like
+ * it's being "approached" by light.  No CSS `transform: scale`
+ * here — Framer drives the bubble's transform via inline style
+ * (scaleX/scaleY motion values for the drag physics), and a CSS
+ * scale would conflict.  The brightening + halo combination
+ * gives the same "lifts on hover" perception. */
+.liquid-glass-bubble:hover::before {
+  opacity: 1;
+}
+.liquid-glass-bubble:hover::after {
+  opacity: calc(var(--active-rainbow-opacity) * 1.6);
+}
+
+/* Countdown card — backwards-compatible alias for `.lg-surface-primary`. */
+.glass-countdown {
+  position: relative;
+  background:
+    linear-gradient(var(--lg-glass-primary), var(--lg-glass-primary)) padding-box,
+    linear-gradient(135deg, var(--lg-glass-highlight) 0%, rgba(255, 255, 255, 0) 100%) border-box;
+  backdrop-filter: blur(var(--lg-blur-strong)) saturate(160%);
+  -webkit-backdrop-filter: blur(var(--lg-blur-strong)) saturate(160%);
+  border: 1px solid transparent;
+  box-shadow:
+    inset 0 0 0 1.5px rgba(255, 255, 255, 0.10),
+    var(--lg-shadow-elevated);
+}
+
+/* ════════════════════════════════════════════════════════════════════
+ * LIQUID GLASS — Reusable Surface Tier Classes
+ * ════════════════════════════════════════════════════════════════════
+ * Three semantic surface tiers, each composing the design tokens
+ * defined at the top of this file.  Apply these classes directly on
+ * the host element; they do not alter padding or layout, only the
+ * glass styling, so they slot into any existing component.
+ *
+ *   .lg-surface-primary   — main cards, large panels, key CTA backdrops
+ *                           (strong blur, highest tint, elevated shadow,
+ *                            radius-lg)
+ *   .lg-surface-secondary — headers, toolbars, banners, info modules
+ *                           (medium blur, secondary tint, soft shadow,
+ *                            radius-md)
+ *   .lg-surface-chip      — chips, badges, tiny modules
+ *                           (weak blur, lightest tint, no float shadow,
+ *                            radius-sm)
+ *
+ * Each class also paints:
+ *   - a 1 px gradient border (top-bright → bottom-faint)
+ *   - an inset 1.5 px glass-plate inner glow to avoid "flat frost"
+ *   - the appropriate floating shadow */
+.lg-surface-primary,
+.lg-surface-secondary,
+.lg-surface-chip {
+  position: relative;
+  border: 1px solid transparent;
+  color: var(--lg-text-primary);
+  /* Per spec: 180–220 ms ease-out across the four properties that
+   * change on hover / focus / state transitions.  All Liquid-Glass
+   * surfaces share the same timing so they read as one cohesive
+   * material — when one surface lifts, the others feel like they
+   * could behave the same way. */
+  transition:
+    background-color         200ms ease-out,
+    box-shadow               200ms ease-out,
+    transform                200ms ease-out,
+    filter                   200ms ease-out,
+    backdrop-filter          200ms ease-out,
+    -webkit-backdrop-filter  200ms ease-out;
+}
+
+/* Hover/focus polish — per spec: "slightly increase brightness and
+ * reduce blur (~10 %) to simulate glass thickening and catching
+ * more light".  `filter: brightness(1.06)` lifts the surface, the
+ * `--blur` step drops by ≈ 10 % via per-tier overrides below. */
+.lg-surface-primary:hover,
+.lg-surface-primary:focus-within,
+.lg-surface-secondary:hover,
+.lg-surface-secondary:focus-within,
+.lg-surface-chip:hover,
+.lg-surface-chip:focus-within {
+  filter: brightness(1.06);
+}
+.lg-surface-primary:hover,
+.lg-surface-primary:focus-within {
+  backdrop-filter:         blur(calc(var(--lg-blur-strong) * 0.9)) saturate(170%);
+  -webkit-backdrop-filter: blur(calc(var(--lg-blur-strong) * 0.9)) saturate(170%);
+}
+.lg-surface-secondary:hover,
+.lg-surface-secondary:focus-within {
+  backdrop-filter:         blur(calc(var(--lg-blur-medium) * 0.9)) saturate(150%);
+  -webkit-backdrop-filter: blur(calc(var(--lg-blur-medium) * 0.9)) saturate(150%);
+}
+.lg-surface-chip:hover,
+.lg-surface-chip:focus-within {
+  backdrop-filter:         blur(calc(var(--lg-blur-weak) * 0.9)) saturate(140%);
+  -webkit-backdrop-filter: blur(calc(var(--lg-blur-weak) * 0.9)) saturate(140%);
+}
+
+/* ─── Specular highlight band ────────────────────────────────────
+ * Soft white-to-transparent gradient strip painted across the top
+ * edge of every primary and secondary surface.  Mimics how a real
+ * pane of glass catches a light source above it.  On hover/focus
+ * the band drifts down a couple of pixels and brightens slightly,
+ * so the surface looks like it's tilting toward the cursor.
+ *
+ * Painted via `::before` so the existing background-image stack
+ * (tint + border-box gradient) on the surface itself is untouched.
+ * `mix-blend-mode: screen` makes the white tint additive — text
+ * underneath gets brighter, never darker, so legibility is safe.
+ * `pointer-events: none` keeps clicks falling through to the host
+ * element and any descendants. */
+.lg-surface-primary,
+.lg-surface-secondary {
+  /* Establish a clean stacking context so `::before` only competes
+   * with siblings inside the surface, not with siblings outside. */
+  isolation: isolate;
+}
+.lg-surface-primary::before,
+.lg-surface-secondary::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 38%;
+  pointer-events: none;
+  border-radius: inherit;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.22) 0%,
+    rgba(255, 255, 255, 0.08) 45%,
+    rgba(255, 255, 255, 0.00) 100%
+  );
+  mix-blend-mode: screen;
+  opacity: 0.85;
+  /* Match the shared 200 ms ease-out used elsewhere so the band
+   * shifts in concert with the rest of the surface. */
+  transition:
+    transform 220ms ease-out,
+    opacity   220ms ease-out;
+  transform: translateY(0);
+  z-index: 0;
+}
+/* Keep host descendants painted ABOVE the highlight band. */
+.lg-surface-primary > *,
+.lg-surface-secondary > * {
+  position: relative;
+  z-index: 1;
+}
+/* Hover/focus/active — gentle band drift + brightness lift.
+ * The band slides DOWN ~3 px on hover (light source feels like
+ * it's moved closer) and back UP ~2 px on press for a quick
+ * "tilt away" cue. */
+.lg-surface-primary:hover::before,
+.lg-surface-primary:focus-within::before,
+.lg-surface-secondary:hover::before,
+.lg-surface-secondary:focus-within::before {
+  transform: translateY(3px);
+  opacity: 1;
+}
+.lg-surface-primary:active::before,
+.lg-surface-secondary:active::before {
+  transform: translateY(-2px);
+  opacity: 0.95;
+  transition-duration: 120ms;
+}
+
+/* ─── .lg-interactive — shared hover/press behavior ──────────────
+ * Opt-in class for tappable glass elements (cards, pills, key
+ * buttons).  Non-interactive surfaces don't get this — they stay
+ * perfectly still so the eye knows what's clickable.
+ *
+ * Spec'd motion:
+ *   • hover:  scale(1.02), brightness +6 %, blur -10 %
+ *   • active: scaleX(1.02) scaleY(0.98) — quick "squish"
+ *
+ * The cubic-bezier(0.34, 1.56, 0.64, 1) is a controlled spring —
+ * tiny overshoot (~6 %) on the way out, snaps cleanly back.  Press
+ * uses a faster, near-linear curve so the squish feels tactile
+ * rather than wobbly.
+ *
+ * NOTE: this class composes with `.lg-surface-*` — the surface
+ * provides the brightness + backdrop-filter transitions, this
+ * class adds the transform layer.  `transform-origin: center`
+ * keeps the squish symmetrical regardless of layout context. */
+.lg-interactive {
+  cursor: pointer;
+  transform: translate3d(0, 0, 0);
+  transform-origin: center;
+  transition:
+    transform  200ms cubic-bezier(0.34, 1.56, 0.64, 1),
+    filter     200ms ease-out,
+    box-shadow 200ms ease-out;
+  will-change: transform;
+}
+.lg-interactive:hover {
+  transform: scale(1.02);
+}
+.lg-interactive:active {
+  transform: scaleX(1.02) scaleY(0.98);
+  transition-duration: 120ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.6, 1);
+}
+
+/* ─── .lg-parallax — cursor-tracked parallax binding ─────────────
+ * Drives the transform from the two custom properties written by
+ * `useLgParallax`.  Surfaces stay at rest until the JS hook starts
+ * writing values, so adding the class without mounting the hook
+ * is a no-op (safe default).  Composes with `.lg-interactive`:
+ * hover scale layers on top because the hover rule overrides the
+ * `transform` declaration via cascade order. */
+.lg-parallax,
+[data-lg-parallax] {
+  transform: translate3d(var(--lg-px, 0px), var(--lg-py, 0px), 0);
+  transition: transform 120ms ease-out;
+  will-change: transform;
+}
+
+/* ─── Keyboard focus visibility over glass ───────────────────────
+ * Frosted surfaces eat soft outlines, so keyboard focus needs a
+ * bright, high-contrast ring.  Crimson accent matches the brand
+ * and stays visible against every gradient stop in the animated
+ * background.  `outline-offset: 3 px` keeps it clear of the
+ * specular highlight band. */
+.lg-interactive:focus-visible,
+.lg-surface-primary:focus-visible,
+.lg-surface-secondary:focus-visible,
+.lg-surface-chip:focus-visible {
+  outline: 2px solid var(--lg-accent-primary);
+  outline-offset: 3px;
+  box-shadow:
+    0 0 0 4px rgba(197, 48, 48, 0.28),
+    var(--lg-shadow-elevated);
+}
+
+/* ─── Reduced-motion fallbacks ────────────────────────────────────
+ * Honour the OS-level setting.  Removes:
+ *   • the specular band drift (set to instant transition)
+ *   • the .lg-interactive hover/press transforms
+ *   • the .lg-parallax cursor binding (also disabled in JS)
+ * Surfaces remain fully styled — only motion is stripped. */
+@media (prefers-reduced-motion: reduce) {
+  .lg-surface-primary,
+  .lg-surface-secondary,
+  .lg-surface-chip,
+  .lg-surface-primary::before,
+  .lg-surface-secondary::before,
+  .lg-interactive,
+  .lg-parallax,
+  [data-lg-parallax] {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+  .lg-interactive:hover,
+  .lg-interactive:active {
+    transform: none !important;
+  }
+  .lg-surface-primary:hover::before,
+  .lg-surface-primary:focus-within::before,
+  .lg-surface-secondary:hover::before,
+  .lg-surface-secondary:focus-within::before,
+  .lg-surface-primary:active::before,
+  .lg-surface-secondary:active::before {
+    transform: none !important;
+  }
+  .lg-parallax,
+  [data-lg-parallax] {
+    transform: none !important;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+ * SCRAPBOOK — Liquid Glass landscape book mode
+ *
+ * Renders a centered 2 : 1 hard-cover frame ("the book") containing
+ * two soft glass pages joined by a darker spine.  Activated only in
+ * landscape — the existing cover-flip intro from the page's phase
+ * machine reveals this layout after the cover swings open.
+ *
+ * All colours sourced from the global `--lg-*` tokens so the book
+ * stays in lock-step with the rest of the design system.  No
+ * media queries on orientation here — the JS phase machine in
+ * `ScrapbookPage.tsx` handles when this is mounted.
+ * ═════════════════════════════════════════════════════════════════ */
+
+/* The stage — full-bleed dark gradient backdrop with 3-D
+ * perspective so the cover gains depth.  The book itself sits
+ * centred inside, with breathing room on every edge. */
+.scrapbook-stage {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  perspective: 1800px;
+  perspective-origin: 50% 40%;
+  background:
+    radial-gradient(ellipse at 50% 28%,
+      rgba(20, 35, 63, 0.55) 0%,
+      transparent           62%),
+    radial-gradient(ellipse at 72% 78%,
+      rgba(52, 10, 10, 0.42) 0%,
+      transparent           65%),
+    linear-gradient(180deg, #07070b 0%, #0a0a0f 100%);
+}
+
+/* The cover — wide pill with a strong glass treatment.  2 : 1
+ * locked via aspect-ratio.  Width is the smaller of (94 vw) or
+ * (94 vh × 2) so the book always fits the viewport.  A subtle
+ * +2 deg X-tilt + isolation creates the depth cue. */
+.scrapbook-book {
+  position: relative;
+  width: min(94vw, calc(94vh * 2));
+  aspect-ratio: 2 / 1;
+  padding: 18px;
+  /* Pages are absolutely positioned inside the cover so the
+   * page-turn layer can overlay a flipping panel on top of them
+   * without breaking grid flow.  An inner perspective gives the
+   * rotateY transforms depth even if the stage's perspective
+   * doesn't reach this far down the tree. */
+  display: block;
+  perspective: 1600px;
+  perspective-origin: 50% 50%;
+  border-radius: 36px;
+  border: 1.5px solid transparent;
+  background:
+    linear-gradient(var(--lg-glass-primary), var(--lg-glass-primary)) padding-box,
+    linear-gradient(135deg,
+      rgba(255, 255, 255, 0.32) 0%,
+      rgba(255, 255, 255, 0.04) 50%,
+      rgba(255, 255, 255, 0.10) 100%) border-box;
+  backdrop-filter:         blur(40px) saturate(1.3);
+  -webkit-backdrop-filter: blur(40px) saturate(1.3);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.10),
+    0 30px 80px rgba(0, 0, 0, 0.58),
+    0 12px 32px rgba(0, 0, 0, 0.40);
+  transform: rotateX(2deg);
+  transform-style: preserve-3d;
+  isolation: isolate;
+}
+/* Top-edge highlight on the cover — matches the dock & primary
+ * surface.  Curves down at the corners to read as a real cover
+ * shine rather than a flat band. */
+.scrapbook-book::before {
+  content: "";
+  position: absolute;
+  left: 24px; right: 24px; top: 4px;
+  height: 22%;
+  border-radius: 28px 28px 60% 60% / 28px 28px 100% 100%;
+  background: linear-gradient(180deg,
+    rgba(255, 255, 255, 0.22) 0%,
+    rgba(255, 255, 255, 0.00) 100%);
+  mix-blend-mode: screen;
+  opacity: 0.85;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Each page — softer than the cover (lighter tint, less blur,
+ * reduced shadow).  Vertical gradient implied via the
+ * left/right modifier classes below: spine side darker, outer
+ * edge brighter — gives depth cue toward the middle of the
+ * book. */
+.scrapbook-page {
+  /* Each page is absolutely positioned within the cover.  Half
+   * the inner width minus the spine half (2.5px) and the
+   * inner padding (18px on the outer side). */
+  position: absolute;
+  top: 18px;
+  bottom: 18px;
+  width: calc(50% - 18px - 2.5px);
+  z-index: 2;
+  border-radius: 24px;
+  border: 1px solid transparent;
+  padding: 24px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  backdrop-filter:         blur(24px) saturate(1.25);
+  -webkit-backdrop-filter: blur(24px) saturate(1.25);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.06),
+    0 8px 24px rgba(0, 0, 0, 0.32);
+}
+/* Spine-side darker → outer-edge brighter, painted via an
+ * angled linear gradient under the standard tint.  The
+ * gradient direction flips for the right page so the dark
+ * corner always faces the spine. */
+.scrapbook-page-left {
+  left: 18px;
+  background:
+    linear-gradient(90deg,
+      rgba(0, 0, 0, 0.20) 0%,
+      rgba(255, 255, 255, 0.06) 35%,
+      rgba(255, 255, 255, 0.02) 100%) padding-box,
+    linear-gradient(135deg,
+      rgba(255, 255, 255, 0.22) 0%,
+      transparent              100%) border-box;
+}
+.scrapbook-page-right {
+  right: 18px;
+  /* Slightly lighter than the left (image) page so long-form
+   * text reads with comfortable contrast.  Tones are pulled up
+   * about 4 % across the gradient. */
+  background:
+    linear-gradient(270deg,
+      rgba(0, 0, 0, 0.16) 0%,
+      rgba(255, 255, 255, 0.10) 35%,
+      rgba(255, 255, 255, 0.05) 100%) padding-box,
+    linear-gradient(135deg,
+      rgba(255, 255, 255, 0.28) 0%,
+      transparent              100%) border-box;
+}
+
+/* Spine — darker bar with inner shadow on both faces, plus a
+ * faint outer glow that bleeds onto the adjacent pages. */
+.scrapbook-spine {
+  position: absolute;
+  top: 18px; bottom: 18px;
+  left: 50%;
+  width: 5px;
+  transform: translateX(-50%);
+  /* Spine sits ABOVE the flipping panel (z = 5) so the page
+   * appears to hinge into the binding rather than overdraw it.
+   * Visually this is what sells the "real book" model — the
+   * spine never disappears under a turning page. */
+  z-index: 6;
+  border-radius: 1px;
+  background: linear-gradient(180deg,
+    rgba(0, 0, 0, 0.55) 0%,
+    rgba(0, 0, 0, 0.78) 50%,
+    rgba(0, 0, 0, 0.55) 100%);
+  box-shadow:
+    inset  1px 0 0 rgba(0, 0, 0, 0.45),
+    inset -1px 0 0 rgba(0, 0, 0, 0.45),
+    0 0 8px rgba(0, 0, 0, 0.55);
+}
+
+/* Page-content wrapper — protects from edge-crowding (per spec
+ * "Ensure content respects a margin so the page edge never
+ * feels crowded") and gives a clean flex column for items. */
+.scrapbook-page-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 4px 8px;
+  min-height: 0;   /* allow children to shrink inside flex */
+}
+
+/* Empty / placeholder messaging on a glass page. */
+.scrapbook-page-empty {
+  font-family: 'Quicksand', sans-serif;
+  color: var(--lg-text-muted);
+  font-size: 0.78rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+/* Tag chips on glass — composes with `.lg-surface-chip` via
+ * the existing token system, just adds typography defaults
+ * appropriate for scrapbook captions. */
+.scrapbook-chip {
+  font-family: 'Quicksand', sans-serif;
+  font-size: 0.65rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  white-space: nowrap;
+}
+
+/* ── Spread page layouts — one post = one spread ─────────────────
+ *
+ * `.scrapbook-page-content--image` lays out the LEFT page (media
+ * + tiny date chip).  `.scrapbook-page-content--text` lays out
+ * the RIGHT page (long-form text + metadata + delete).
+ *
+ * Both inherit the base `.scrapbook-page-content` flex column;
+ * these modifiers tweak alignment/gap so the photo doesn't
+ * crowd the chip and the text page reads top-down. */
+.scrapbook-page-content--image {
+  justify-content: center;
+  gap: 14px;
+}
+.scrapbook-page-content--text {
+  justify-content: flex-start;
+  align-items: stretch;
+  gap: 0;
+  padding: 12px 14px;
+}
+
+/* Image frame — caps the polaroid size so it never overlaps the
+ * chip beneath it, regardless of the available page height. */
+.scrapbook-image-frame {
+  flex: 1 1 auto;
+  min-height: 0;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Hard ceiling so a tall portrait photo can't push the chip
+   * off the bottom edge of the page. */
+  max-height: calc(100% - 36px);
+}
+
+/* Text page — tuned for comfortable reading.  The body region
+ * scrolls inside the page if (and only if) the content exceeds
+ * the available height; normal-length notes simply fit. */
+.scrapbook-text-page {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.scrapbook-text-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  padding-right: 6px;
+  /* Custom scroll affordance — only visible when needed. */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.18) transparent;
+}
+.scrapbook-text-body::-webkit-scrollbar { width: 4px; }
+.scrapbook-text-body::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.18);
+  border-radius: 2px;
+}
+/* Reading typography — large, soft serif body, generous leading. */
+.scrapbook-text-paragraph {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  color: var(--lg-text-primary);
+  font-size: clamp(1.05rem, 1.8vw, 1.35rem);
+  line-height: 1.7;
+  margin: 0;
+  word-break: break-word;
+  white-space: pre-wrap;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+}
+.scrapbook-text-placeholder {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  color: var(--lg-text-muted);
+  font-size: 1rem;
+  margin: 0;
+  text-align: center;
+  margin-top: 1.4rem;
+}
+
+/* Footer metadata — author + date, separated by a faint rule. */
+.scrapbook-text-meta {
+  flex-shrink: 0;
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding-top: 6px;
+}
+.scrapbook-text-meta__rule {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.18) 30%,
+    rgba(255, 255, 255, 0.18) 70%,
+    transparent
+  );
+}
+.scrapbook-text-meta__author {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  color: var(--lg-text-secondary);
+  font-size: 0.85rem;
+}
+.scrapbook-text-meta__date {
+  font-family: 'Quicksand', sans-serif;
+  color: var(--lg-text-muted);
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* Delete chip — sits at the very bottom of the right page,
+ * separated from the body so it never feels clickable from a
+ * caption mis-tap.  Self-aligns to start so the affordance is
+ * obvious without dominating the layout. */
+.scrapbook-text-delete {
+  align-self: flex-start;
+  margin-top: 4px;
+}
+
+/* ─── Page-turn layer (PageTurnLayer.tsx) ──────────────────────────
+ *
+ * Three Z-layers stacked over the cover's inner area:
+ *
+ *   .scrapbook-flip-bg        z = 1  destination spread underneath
+ *   .scrapbook-flip-static    z = 2  static current page (non-flip side)
+ *   .scrapbook-flip-page      z = 5  the flipping panel itself (3D)
+ *
+ * The flipping panel's `transform-origin` sits at the spine edge
+ * so the page rotates from the centre of the book outward, like
+ * a real page hinged on the binding.  Inner perspective lives on
+ * `.scrapbook-book` so the rotateY reads as foreshortening. */
+.scrapbook-flip-bg     { z-index: 1; }
+.scrapbook-flip-static { z-index: 2; }
+
+.scrapbook-flip-page {
+  position: absolute;
+  top: 18px;
+  bottom: 18px;
+  width: calc(50% - 18px - 2.5px);
+  z-index: 5;
+  pointer-events: none;
+  transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
+  /* Bevel cue: drop shadow that intensifies as the page lifts. */
+  filter: drop-shadow(0 14px 22px rgba(0, 0, 0, 0.35));
+  will-change: transform;
+}
+.scrapbook-flip-page--right {
+  right: 18px;
+  transform-origin: left center;
+}
+.scrapbook-flip-page--left {
+  left: 18px;
+  transform-origin: right center;
+}
+
+.scrapbook-flip-face {
+  position: absolute;
+  inset: 0;
+  border-radius: 24px;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  overflow: hidden;
+}
+.scrapbook-flip-face--back {
+  /* Back face is rotated 180° around Y so it sits behind the
+   * front and becomes visible once the panel passes 90°. */
+  transform: rotateY(180deg);
+}
+
+/* Curl — bright highlight at the outer edge, soft shadow toward
+ * the spine, peaks at ±90° via the JS-driven opacity envelope.
+ * `mix-blend-mode: overlay` lets it brighten the photo
+ * underneath without obscuring detail. */
+.scrapbook-flip-curl {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(90deg,
+    rgba(255, 255, 255, 0.22) 0%,
+    rgba(255, 255, 255, 0.06) 35%,
+    rgba(0, 0, 0, 0.32)       80%,
+    rgba(0, 0, 0, 0.55)      100%);
+  mix-blend-mode: overlay;
+}
+.scrapbook-flip-page--left .scrapbook-flip-curl {
+  background: linear-gradient(270deg,
+    rgba(255, 255, 255, 0.22) 0%,
+    rgba(255, 255, 255, 0.06) 35%,
+    rgba(0, 0, 0, 0.32)       80%,
+    rgba(0, 0, 0, 0.55)      100%);
+}
+
+/* Reduced-motion fallback — simple opacity crossfade overlay. */
+.scrapbook-flip-fade {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  pointer-events: none;
+}
+
+/* Reduced-motion: disable the cover tilt + suppress the flipping
+ * panel.  The crossfade overlay above takes its place. */
+@media (prefers-reduced-motion: reduce) {
+  .scrapbook-book { transform: none; }
+  .scrapbook-flip-page { display: none; }
+}
+
+/* ─── LoveYouSendAnimation (LoveYouSendAnimation.tsx) ──────────────
+ *
+ * "Living glass heart" pulse animation for the Home screen's
+ * Love-You action.  Layered orb composed of:
+ *
+ *   .lyo-orb            — outer Liquid Glass capsule
+ *     .lyo-glow         — radial accent glow underneath the heart
+ *     .lyo-flash        — bright white burst at peak of pulse
+ *     .lyo-sheen        — top-edge specular highlight band
+ *     .lyo-heart-halo   — soft outer halo (heaviest blur)
+ *     .lyo-heart-fill   — solid heart fill (the visible shape)
+ *     .lyo-heart-core   — bright inner core (white-hot center)
+ *   .lyo-ripple         — expanding ring on tap
+ *   .lyo-particle       — 6 mini hearts that drift up + blur
+ *
+ * All blur / radius / shadow values pulled from `--lg-*` tokens
+ * so the orb sits visually in the same family as the dock and
+ * primary cards.  The accent color is themable per-instance via
+ * the `--lyo-accent` CSS var set on `.lyo-stage`. */
+.lyo-stage {
+  --lyo-accent: var(--lg-accent-primary);
+  display: grid;
+  place-items: center;
+  isolation: isolate;
+  /* `contain: layout` only — `contain: paint` would clip the
+   * heart particles whose drift target (≈ 100 px outward) exits
+   * the 176 px stage bounds.  Layout containment is enough to
+   * keep parent reflows out of the orb's subtree. */
+  contain: layout;
+  /* Particles intentionally drift OUTSIDE the stage rect, so
+   * never clip them. */
+  overflow: visible;
+}
+
+/* The orb itself — a circular Liquid Glass capsule. */
+.lyo-orb {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 1.5px solid transparent;
+  background:
+    radial-gradient(circle at 32% 28%,
+      color-mix(in srgb, var(--lyo-accent) 38%, transparent) 0%,
+      color-mix(in srgb, var(--lyo-accent) 22%, transparent) 50%,
+      rgba(20, 8, 12, 0.28)                                 100%) padding-box,
+    linear-gradient(135deg,
+      var(--lg-glass-highlight) 0%,
+      transparent              60%) border-box;
+  backdrop-filter:         blur(var(--lg-blur-strong)) saturate(180%);
+  -webkit-backdrop-filter: blur(var(--lg-blur-strong)) saturate(180%);
+  box-shadow:
+    inset 0.5px 0.5px 0 rgba(255, 255, 255, 0.95),
+    inset 0   -1px   0 rgba(0, 0, 0, 0.28),
+    0 0 36px color-mix(in srgb, var(--lyo-accent) 38%, transparent),
+    var(--lg-shadow-elevated);
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  font-family: 'Playfair Display', serif;
+  color: var(--lg-text-primary);
+  overflow: hidden;
+  /* will-change for transform only — the animation lives on
+   * scale, not on layout properties. */
+  will-change: transform;
+}
+.lyo-orb:disabled {
+  cursor: default;
+}
+
+/* Glow core — soft warm bloom centered on the heart, scales
+ * with the pulse for a "filling with light" feel. */
+.lyo-glow {
+  position: absolute;
+  inset: 12%;
+  border-radius: 50%;
+  background: radial-gradient(circle,
+    color-mix(in srgb, var(--lyo-accent) 75%, white 25%) 0%,
+    color-mix(in srgb, var(--lyo-accent) 45%, transparent) 35%,
+    transparent                                            70%);
+  filter: blur(8px);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Flash — short bright burst overlay at peak of pulse. */
+.lyo-flash {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 45%,
+    rgba(255, 255, 255, 0.85) 0%,
+    rgba(255, 240, 245, 0.40) 35%,
+    transparent              70%);
+  pointer-events: none;
+  mix-blend-mode: screen;
+  z-index: 3;
+}
+
+/* Specular highlight band — top-edge crescent that catches the
+ * light, drifts with the global parallax for liquid feel. */
+.lyo-sheen {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  pointer-events: none;
+  background: linear-gradient(170deg,
+    rgba(255, 255, 255, 0.45) 0%,
+    rgba(255, 255, 255, 0.10) 28%,
+    transparent              50%);
+  mix-blend-mode: screen;
+  z-index: 2;
+  transform: translate3d(var(--lg-px, 0px), var(--lg-py, 0px), 0);
+  transition: transform 220ms ease-out;
+}
+
+/* Heart wrapper — animated by JS for the beat-scale envelope. */
+.lyo-heart {
+  position: relative;
+  z-index: 4;
+  display: grid;
+  place-items: center;
+  font-size: 2.1rem;
+  line-height: 1;
+  /* Stack the three heart layers on the same grid cell. */
+}
+.lyo-heart > span {
+  grid-area: 1 / 1;
+  display: block;
+  pointer-events: none;
+}
+/* Outer halo — heaviest blur, paints the warm spill ring. */
+.lyo-heart-halo {
+  color: color-mix(in srgb, var(--lyo-accent) 90%, white 10%);
+  filter: blur(10px);
+  opacity: 0.9;
+  transform: scale(1.25);
+}
+/* Solid fill — the shape you actually read. */
+.lyo-heart-fill {
+  color: color-mix(in srgb, var(--lyo-accent) 88%, white 12%);
+  text-shadow:
+    0 0 6px color-mix(in srgb, var(--lyo-accent) 60%, transparent),
+    0 1px 2px rgba(0, 0, 0, 0.45);
+}
+/* Bright inner core — white-hot center, sells the "alive" cue. */
+.lyo-heart-core {
+  color: rgba(255, 245, 248, 0.95);
+  filter: blur(0.4px);
+  transform: scale(0.55);
+  mix-blend-mode: screen;
+  opacity: 0.85;
+}
+
+.lyo-label {
+  position: relative;
+  z-index: 4;
+  font-family: 'Quicksand', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: var(--lg-text-primary);
+  margin-top: 4px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
+}
+
+/* Ripple — single expanding stroke that fades quickly. */
+.lyo-ripple {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2.5px solid color-mix(in srgb, var(--lyo-accent) 80%, white 20%);
+  box-shadow:
+    0 0 24px color-mix(in srgb, var(--lyo-accent) 45%, transparent),
+    inset 0 0 12px color-mix(in srgb, var(--lyo-accent) 25%, transparent);
+  pointer-events: none;
+  z-index: 0;
+  /* opacity / scale animated by Framer Motion; rest at 0 opacity. */
+  opacity: 0;
+}
+
+/* Heart particles — float upward, fade, blur out. */
+.lyo-particle {
+  position: absolute;
+  top: 38%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 1rem;
+  color: color-mix(in srgb, var(--lyo-accent) 85%, white 15%);
+  text-shadow: 0 0 8px color-mix(in srgb, var(--lyo-accent) 60%, transparent);
+  pointer-events: none;
+  z-index: 5;
+  will-change: transform, opacity, filter;
+}
+
+/* Reduced-motion: suppress the breathing-loop easing artefacts
+ * and any blur-heavy transitions; the JS already collapses the
+ * send animation to a single scale tween. */
+@media (prefers-reduced-motion: reduce) {
+  .lyo-sheen { transition: none; }
+  .lyo-particle { display: none; }
+  .lyo-ripple { display: none; }
+}
+
+/* Reduced-transparency: swap the orb's translucent surface for an
+ * opaque solid so the shape survives without blur. */
+@media (prefers-reduced-transparency: reduce) {
+  .lyo-orb {
+    background: #1f1525;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+}
+
+/* ─── LoveYouOverlay (LoveYouOverlay.tsx) ──────────────────────────
+ *
+ * Full-screen cinematic reveal for an incoming Love-You.  The
+ * overlay reuses the `.lyo-*` orb classes for the heart itself
+ * and adds these `.lyov-*` (Love-You-OVerlay) layout/effect
+ * classes:
+ *
+ *   .lyov-backdrop    — fixed full-screen darkened+blurred panel
+ *   .lyov-travel      — wrapper for the travelling light point
+ *     .lyov-spark     — the bright dot at the head of the trail
+ *     .lyov-trail     — soft vertical streak behind the dot
+ *   .lyov-orb-wrap    — centers the heart orb + ripple
+ *     .lyov-form-ripple — one-shot CSS keyframe ring on inflate
+ *   .lyov-orbit       — rotating ring containing 8 orbiters
+ *     .lyov-orbiter   — single mini-heart in the orbit ring
+ *   .lyov-copy        — title + message + CTA stack
+ *     .lyov-title / .lyov-message / .lyov-cta
+ */
+.lyov-backdrop {
+  position: fixed;
+  inset: 0;
+  /* Above GhostWhisper modals (z=999) so a Love-You arriving while
+   * a whisper is open still takes the foreground — the cinematic
+   * reveal is the highest-priority surface in the app. */
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2.5rem;
+  /* The dim+blur reuses the same blur token family as the rest
+   * of the Liquid Glass surfaces so the overlay reads as part
+   * of the same material world rather than an opaque modal. */
+  background: radial-gradient(
+    ellipse at center,
+    rgba(8, 14, 38, 0.72) 0%,
+    rgba(4, 6, 18, 0.92) 100%
+  );
+  backdrop-filter:         blur(24px) saturate(140%) brightness(0.85);
+  -webkit-backdrop-filter: blur(24px) saturate(140%) brightness(0.85);
+  /* Soft inner glow so the orb's spill blends into the backdrop
+   * instead of clipping at the edges of the screen. */
+  box-shadow: inset 0 0 200px rgba(197, 48, 48, 0.18);
+}
+
+/* ── Travelling light point + trail ──────────────────────────── */
+.lyov-travel {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-top: -10px;
+  margin-left: -10px;
+  width: 20px;
+  height: 20px;
+  pointer-events: none;
+}
+.lyov-spark {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.95) 0%,
+    color-mix(in srgb, var(--lg-accent-primary) 80%, white 20%) 45%,
+    transparent 80%
+  );
+  box-shadow:
+    0 0 24px color-mix(in srgb, var(--lg-accent-primary) 70%, transparent),
+    0 0 60px color-mix(in srgb, var(--lg-accent-primary) 35%, transparent);
+}
+/* The trail is a vertical blurred gradient anchored BELOW the
+ * spark and stretches up the path.  Because it lives inside
+ * `.lyov-travel` it inherits the same animated transform and
+ * sweeps up the screen as one piece with the spark. */
+.lyov-trail {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  width: 6px;
+  height: 110px;
+  transform: translateX(-50%);
+  background: linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--lg-accent-primary) 60%, transparent) 0%,
+    transparent 100%
+  );
+  filter: blur(4px);
+  border-radius: 999px;
+  opacity: 0.85;
+}
+
+/* ── Orb wrapper + form-ripple ───────────────────────────────── */
+.lyov-orb-wrap {
+  position: relative;
+  display: grid;
+  place-items: center;
+  isolation: isolate;
+}
+.lyov-orb {
+  /* Bigger than the home-screen sender (220 px vs 176) so the
+   * receiver experience feels like the message landed BIG. */
+  width: 220px;
+  height: 220px;
+  cursor: pointer;
+}
+/* CSS-only one-shot ripple that runs as soon as the inflate
+ * phase mounts.  Pure transform/opacity so no layout work. */
+.lyov-form-ripple {
+  position: absolute;
+  inset: 0;
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  border: 2px solid color-mix(in srgb, var(--lg-accent-primary) 80%, white 20%);
+  pointer-events: none;
+  z-index: 0;
+  animation: lyov-form-ripple 0.7s ease-out forwards;
+}
+@keyframes lyov-form-ripple {
+  0%   { transform: scale(0.7); opacity: 0.9; }
+  60%  { transform: scale(1.4); opacity: 0.4; }
+  100% { transform: scale(1.7); opacity: 0;   }
+}
+
+/* ── Orbiting particles ──────────────────────────────────────── */
+.lyov-orbit {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+  z-index: 6;
+}
+.lyov-orbiter {
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin: -10px 0 0 -10px;
+  width: 20px;
+  height: 20px;
+  display: grid;
+  place-items: center;
+  font-size: 1.1rem;
+  color: color-mix(in srgb, var(--lg-accent-primary) 85%, white 15%);
+  text-shadow: 0 0 10px color-mix(in srgb, var(--lg-accent-primary) 60%, transparent);
+  will-change: transform;
+}
+
+/* ── Copy stack ─────────────────────────────────────────────── */
+.lyov-copy {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 0 2rem;
+  max-width: 360px;
+  text-align: center;
+}
+.lyov-title {
+  margin: 0;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--lg-text-primary);
+  text-shadow: 0 3px 18px rgba(197, 48, 48, 0.55), 0 1px 3px rgba(0, 0, 0, 0.5);
+  letter-spacing: 0.01em;
+}
+.lyov-message {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--lg-text-secondary);
+}
+.lyov-cta {
+  margin-top: 4px;
+  appearance: none;
+  -webkit-appearance: none;
+  border: 1px solid color-mix(in srgb, var(--lg-accent-primary) 50%, transparent);
+  background:
+    linear-gradient(135deg,
+      color-mix(in srgb, var(--lg-accent-primary) 28%, transparent),
+      color-mix(in srgb, var(--lg-accent-primary) 14%, transparent));
+  backdrop-filter:         blur(var(--lg-blur-medium)) saturate(160%);
+  -webkit-backdrop-filter: blur(var(--lg-blur-medium)) saturate(160%);
+  color: var(--lg-text-primary);
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  padding: 0.7rem 1.6rem;
+  border-radius: 999px;
+  cursor: pointer;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.25),
+    0 8px 24px color-mix(in srgb, var(--lg-accent-primary) 35%, transparent);
+  transition: transform 160ms ease-out, box-shadow 160ms ease-out;
+}
+.lyov-cta:hover {
+  transform: translateY(-1px);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.3),
+    0 12px 32px color-mix(in srgb, var(--lg-accent-primary) 45%, transparent);
+}
+.lyov-cta:focus-visible {
+  outline: 2px solid var(--lg-glass-highlight);
+  outline-offset: 3px;
+}
+
+/* Reduced-motion: collapse the entry FX (CSS-only ripple, orbit
+ * tween, trail) so only the JS-driven fade/bump remains. */
+@media (prefers-reduced-motion: reduce) {
+  .lyov-form-ripple { animation: none; opacity: 0; }
+  .lyov-orbit       { display: none; }
+  .lyov-travel      { display: none; }
+}
+
+/* Reduced-transparency fallback for the overlay backdrop. */
+@media (prefers-reduced-transparency: reduce) {
+  .lyov-backdrop {
+    background: #060818;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+}
+/* Reduced-transparency: swap glass for opaque surfaces so the
+ * shapes survive even when the user opts out of translucency. */
+@media (prefers-reduced-transparency: reduce) {
+  .scrapbook-book {
+    background: #14141c;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+  .scrapbook-page,
+  .scrapbook-page-left,
+  .scrapbook-page-right {
+    background: #1c1c26;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+  .scrapbook-book::before { display: none; }
+}
+
+/* ─── Reduced-transparency fallbacks ──────────────────────────────
+ * Some users (vestibular sensitivity, low-end GPUs, accessibility
+ * preference) opt out of translucent UIs.  Replace the glass with
+ * darker, opaque solids while preserving radius, padding, layout,
+ * and the inner-glow border so the visual hierarchy is intact.
+ * Drops backdrop-filter entirely (also removes the perf cost on
+ * weaker hardware), trims the heavy ambient shadow, and hides the
+ * specular highlight band (no glass = no light response). */
+@media (prefers-reduced-transparency: reduce) {
+  .lg-surface-primary {
+    background: #14141c;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    box-shadow:
+      inset 0 0 0 1px rgba(255, 255, 255, 0.10),
+      0 6px 16px rgba(0, 0, 0, 0.45);
+  }
+  .lg-surface-secondary {
+    background: #1a1a24;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    box-shadow:
+      inset 0 0 0 1px rgba(255, 255, 255, 0.08),
+      0 4px 10px rgba(0, 0, 0, 0.40);
+  }
+  .lg-surface-chip {
+    background: #1f1f2a;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    box-shadow:
+      inset 0 0 0 1px rgba(255, 255, 255, 0.08),
+      0 2px 4px rgba(0, 0, 0, 0.35);
+  }
+  .lg-surface-primary::before,
+  .lg-surface-secondary::before {
+    display: none;
+  }
+}
+
+.lg-surface-primary {
+  background:
+    linear-gradient(var(--lg-glass-primary), var(--lg-glass-primary)) padding-box,
+    linear-gradient(135deg, var(--lg-glass-highlight) 0%, rgba(255, 255, 255, 0) 100%) border-box;
+  backdrop-filter:         blur(var(--lg-blur-strong)) saturate(160%);
+  -webkit-backdrop-filter: blur(var(--lg-blur-strong)) saturate(160%);
+  border-radius: var(--lg-radius-lg);
+  box-shadow:
+    inset 0 0 0 1.5px rgba(255, 255, 255, 0.10),
+    var(--lg-shadow-elevated);
+}
+
+.lg-surface-secondary {
+  background:
+    linear-gradient(var(--lg-glass-secondary), var(--lg-glass-secondary)) padding-box,
+    linear-gradient(135deg, rgba(255, 255, 255, 0.28) 0%, rgba(255, 255, 255, 0) 100%) border-box;
+  backdrop-filter:         blur(var(--lg-blur-medium)) saturate(140%);
+  -webkit-backdrop-filter: blur(var(--lg-blur-medium)) saturate(140%);
+  border-radius: var(--lg-radius-md);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.08),
+    var(--lg-shadow-soft);
+}
+
+.lg-surface-chip {
+  background:
+    linear-gradient(var(--lg-glass-chip), var(--lg-glass-chip)) padding-box,
+    linear-gradient(135deg, rgba(255, 255, 255, 0.22) 0%, rgba(255, 255, 255, 0) 100%) border-box;
+  backdrop-filter:         blur(var(--lg-blur-weak)) saturate(130%);
+  -webkit-backdrop-filter: blur(var(--lg-blur-weak)) saturate(130%);
+  border-radius: var(--lg-radius-sm);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.06),
+    0 2px 6px rgba(0, 0, 0, 0.12);
+  color: var(--lg-text-secondary);
+}
+
+/* ── Animated background gradient ────────────────────────────── */
+/*
+ * GPU-COMPOSITED approach: only `transform` is animated (zero repaint).
+ * The layer is 130% × 130% of the container — translation has headroom
+ * without exposing gaps. All content sits above it in z-order.
+ */
+@keyframes bg-drift {
+  0%   { transform: translate(0%,    0%);    }
+  25%  { transform: translate(-8%,  -6%);    }
+  50%  { transform: translate(-16%,  4%);    }
+  75%  { transform: translate(-5%,  10%);    }
+  100% { transform: translate(0%,    0%);    }
+}
+
+/* Static fallback colour so there's never a flash */
+.animated-bg {
+  background: #0a0a0f;
+  position: relative;
+}
+
+/* Separate composited layer — painted once, only transform updates.
+ * Brand colours are retained but pulled deep into the shadows so the
+ * Liquid Glass refraction reads against true near-black contrast. */
+.animated-bg-layer {
+  position: absolute;
+  top: -15%;  left: -15%;
+  width: 130%; height: 130%;
+  /* Gradient pulled from `--lg-bg-gradient` so the entire app
+   * background is themable from the design-token layer. */
+  background: var(--lg-bg-gradient);
+  animation: bg-drift 18s ease infinite;
+  will-change: transform;
+  transform: translateZ(0);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Subtle vignette — radial darkening of the corners on top of the
+ * animated gradient, gives the page a "cinematic" feel and frames
+ * the floating glass surfaces above it.  Does not animate. */
+.animated-bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse at center,
+    transparent 55%,
+    rgba(0, 0, 0, 0.55) 100%
+  );
+  z-index: 0;
+}
+
+/* ── Trivia Theater — deep violet → crimson pulsing gradient ─────── */
+@keyframes trivia-drift {
+  0%   { transform: translate(0%,    0%);    }
+  25%  { transform: translate(-10%, -7%);    }
+  50%  { transform: translate(-20%,  4%);    }
+  75%  { transform: translate(-6%,  12%);    }
+  100% { transform: translate(0%,    0%);    }
+}
+
+.trivia-bg {
+  background: #0d0521;
+  position: relative;
+}
+
+.trivia-bg-layer {
+  position: absolute;
+  top: -15%;  left: -15%;
+  width: 130%; height: 130%;
+  background: linear-gradient(
+    -45deg,
+    #0d0521, #1e0a45, #3a1265, #4a1942,
+    #7b1313, #4a1942, #1e0a45, #0d0521
+  );
+  animation: trivia-drift 12s ease infinite;
+  will-change: transform;
+  transform: translateZ(0);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── Gold match glow pulse ─────────────────────────────────────────
+ * Uses opacity-only animation (GPU composited, zero paint).
+ * Static box-shadow is applied on the element itself.
+ */
+@keyframes gold-glow-pulse {
+  0%, 100% { opacity: 0.82; }
+  50%       { opacity: 1;    }
+}
+.gold-glow-pulse {
+  animation: gold-glow-pulse 2.4s ease-in-out infinite;
+}
+
+/* ── App shell — link #3 in the flex chain ────────────────────────────────
+ *
+ * flex: 1 1 0  → grows to fill all of #root's 100dvh, shrinks if needed
+ * min-height: 0 → CRITICAL: without this, flex children won't shrink past
+ *                 their content size and will overflow the container
+ * position: relative → so absolutely-positioned children (animated-bg-layer,
+ *                       ambient orbs, birthday banner) anchor here
+ * overflow: hidden   → clips the oversized animated background layer
+ */
+.app-shell {
+  flex: 1 1 0;
+  min-height: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+}
+
+/* ── Nudge button — idle heartbeat ───────────────────────────── */
+@keyframes heartbeat {
+  0%, 100% { transform: scale(1); }
+  14%       { transform: scale(1.06); }
+  28%       { transform: scale(1); }
+  42%       { transform: scale(1.04); }
+  70%       { transform: scale(1); }
+}
+
+.nudge-heartbeat {
+  animation: heartbeat 2.2s ease-in-out infinite;
+}
+
+/* ── On-click expanding rings ────────────────────────────────── */
+@keyframes nudge-ping {
+  0%   { transform: scale(1); opacity: 0.75; }
+  100% { transform: scale(1.75); opacity: 0; }
+}
+
+.animate-nudge-ping {
+  animation: nudge-ping 0.95s cubic-bezier(0.2, 0, 0.55, 1) forwards;
+}
+
+/* Full-screen ripple */
+@keyframes fullscreen-ripple {
+  0%   { transform: scale(0); opacity: 0.45; }
+  100% { transform: scale(30); opacity: 0; }
+}
+
+.animate-fullscreen-ripple {
+  animation: fullscreen-ripple 1.1s cubic-bezier(0.1, 0, 0.4, 1) forwards;
+}
+
+/* ── Cinema mode (landscape scrapbook) — full-bleed fix ──────────
+ *
+ * The page transition motion.div has CSS `transform` applied which
+ * causes `position:fixed` children to use it as their containing
+ * block instead of the viewport.  We fix this two ways:
+ * 1) Use createPortal in ScrapbookPage so the overlay renders at body.
+ * 2) Remove overflow:hidden from the flex chain so iOS Safari doesn't
+ *    clip the portal'd fixed element either.
+ *
+ * .glass-nav is faded out (opacity:0 + pointer-events:none) in cinema
+ * mode — the overlay already covers it at z-index 300, but removing it
+ * from the stacking context ensures zero touch-event bleed.
+ */
+html.cinema-mode               { overflow: visible !important; }
+html.cinema-mode body          { overflow: visible !important; }
+html.cinema-mode #root         { overflow: visible !important; max-width: none; }
+html.cinema-mode .glass-nav    { pointer-events: none !important; opacity: 0 !important; transition: opacity 0.25s; }
+
+/* ── Love You button — slow breathing scale pulse ──────────────── */
+@keyframes love-breathe {
+  0%, 100% { transform: scale(1);    box-shadow: 0 0 28px rgba(197,48,48,0.38), 0 8px 32px rgba(0,0,0,0.45); }
+  50%       { transform: scale(1.05); box-shadow: 0 0 52px rgba(197,48,48,0.68), 0 8px 32px rgba(0,0,0,0.45); }
+}
+.love-breathe {
+  animation: love-breathe 3.2s ease-in-out infinite;
+}
+
+/* ── Hide scrollbar on countdown carousel ───────────────────────── */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+
+/* Global landscape media query: force viewport-relative layout on rotation */
+@media (orientation: landscape) {
+  #root { max-width: none; }
+}
+
+/* ── Scrapbook corkboard background ──────────────────────────── */
+.scrapbook-bg {
+  background-image: radial-gradient(rgba(255,255,255,0.055) 1.2px, transparent 1.2px);
+  background-size: 22px 22px;
+}
+
+/* ── Polaroid card ────────────────────────────────────────────── */
+.polaroid-card {
+  background: #f6f0e8;
+  border-radius: 2px;
+  box-shadow: 2px 4px 14px rgba(0,0,0,0.40), 0 1px 4px rgba(0,0,0,0.18);
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.polaroid-card:active {
+  box-shadow: 4px 8px 28px rgba(0,0,0,0.52), 0 2px 8px rgba(0,0,0,0.22);
+}
+
+/* ── Image masonry (2-col) ────────────────────────────────────── */
+.image-masonry {
+  columns: 2;
+  column-gap: 0.65rem;
+}
+
+.image-masonry-item {
+  break-inside: avoid;
+  margin-bottom: 0.65rem;
+  display: block;
+}
+
+/* ── Tactile crimson button ───────────────────────────────────── */
+.btn-crimson {
+  background: linear-gradient(145deg, #E53E3E 0%, #9B2C2C 100%);
+  box-shadow: 0 0 18px rgba(197,48,48,0.45), 0 4px 14px rgba(0,0,0,0.3);
+  transition: box-shadow 0.18s ease, transform 0.14s ease;
+  color: white;
+  font-weight: 600;
+  border: none;
+}
+.btn-crimson:active {
+  transform: scale(0.96);
+  box-shadow: 0 0 28px rgba(197,48,48,0.65), 0 2px 8px rgba(0,0,0,0.35);
+}
+.btn-crimson:disabled {
+  opacity: 0.5;
+  box-shadow: none;
+}
+
+/* ── Date Planner feature card ────────────────────────────────── */
+.date-card {
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 6px 28px rgba(0,0,0,0.35);
+  position: relative;
+  min-height: 152px;
+}
+
+/* ── Countdown badge ──────────────────────────────────────────── */
+.countdown-badge {
+  display: inline-block;
+  background: rgba(255,255,255,0.18);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,0.3);
+  color: white;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  border-radius: 999px;
+}
+
+/* ── Living Sky animations ────────────────────────────────────── */
+
+/* Clouds drift left → right, GPU-composited transform only */
+@keyframes sky-cloud {
+  from { transform: translateX(0); }
+  to   { transform: translateX(700px); }
+}
+
+/* Stars twinkle via opacity (no layout/paint) */
+@keyframes sky-twinkle {
+  0%, 100% { opacity: 0.25; transform: scale(0.85); }
+  50%       { opacity: 1;    transform: scale(1.15); }
+}
+
+/* Dawn mist drifts slowly side to side */
+@keyframes sky-mist {
+  0%   { transform: translateX(-4%) scaleX(1);    opacity: 0.55; }
+  50%  { transform: translateX(4%)  scaleX(1.06); opacity: 0.85; }
+  100% { transform: translateX(-4%) scaleX(1);    opacity: 0.55; }
+}
+
+/* Rain: tall div slides down — pure transform, GPU-composited */
+@keyframes sky-rain {
+  from { transform: translateY(0); }
+  to   { transform: translateY(50%); }
+}
+
+/* Inner rain element fills 200% height so seam is invisible */
+.sky-rain-inner {
+  position: absolute;
+  top: -100%;
+  left: 0;
+  right: 0;
+  height: 300%;
+  background-image: repeating-linear-gradient(
+    172deg,
+    transparent 0px,
+    transparent 5px,
+    rgba(200, 228, 255, 0.13) 5px,
+    rgba(200, 228, 255, 0.13) 6px,
+    transparent 6px,
+    transparent 28px
+  );
+  animation: sky-rain 0.55s linear infinite;
+  will-change: transform;
+}
+
+/* ── Birthday sparkle ─────────────────────────────────────────── */
+@keyframes sparkle-spin {
+  0%   { transform: rotate(0deg) scale(1);   opacity: 1; }
+  50%  { transform: rotate(180deg) scale(1.3); opacity: 0.7; }
+  100% { transform: rotate(360deg) scale(1);   opacity: 1; }
+}
+
+@keyframes sparkle-float {
+  0%, 100% { transform: translateY(0px); opacity: 1; }
+  50%       { transform: translateY(-5px); opacity: 0.6; }
+}
+
+.animate-sparkle-spin {
+  animation: sparkle-spin 3s linear infinite;
+}
+
+.animate-sparkle-float {
+  animation: sparkle-float 2s ease-in-out infinite;
+}

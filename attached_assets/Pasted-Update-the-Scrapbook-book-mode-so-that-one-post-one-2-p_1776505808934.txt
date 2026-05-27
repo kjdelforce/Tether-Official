@@ -1,0 +1,49 @@
+Update the Scrapbook book-mode so that **one post = one 2-page spread**.
+
+Current issue:
+- In the new Liquid Glass book layout, the photo and its caption/text are all on a single page, so the text overflows and becomes hard to read.
+
+Change the model and layout as follows:
+
+1. Data / structure
+- Treat each scrapbook post as a single `Spread` object with:
+  - left page: primarily the image / media
+  - right page: the long-form text, date, and controls (e.g. DELETE button)
+- Instead of mapping posts to individual pages, map them to spreads:
+  - `currentSpreadIndex` moves through posts one-by-one.
+  - Each spread always renders TWO pages side-by-side for that single post.
+
+2. Layout
+- For the current spread:
+  - Left `.scrapbook-page--left` shows:
+    - the main image (Polaroid-style card),
+    - the date,
+    - any small tag or title.
+  - Right `.scrapbook-page--right` shows:
+    - the full text body, with generous line-height and padding,
+    - the delete or action buttons anchored near the bottom.
+- Ensure the text page has enough vertical space and scrolls **within the page** only if absolutely necessary (max-height with subtle inner scroll).
+
+3. Navigation
+- Keep the existing “spread X of Y” logic, but make sure:
+  - navigation arrows move between spreads/posts, not individual pages.
+  - the page-turn animation flips the whole spread:
+    - going forward turns the right page over to reveal the NEXT post’s left page,
+    - going backward flips from the left back to the previous spread.
+- Update any page index calculations so they are based on spreads (posts) instead of raw pages.
+
+4. Visual polish
+- Left image page:
+  - Maintain the Polaroid look but center it nicely and reduce its size if needed so it never covers the bottom text on that page.
+- Right text page:
+  - Use a slightly lighter glass tone for legibility.
+  - Ensure typography is tuned for reading: larger font size, comfortable line-height, and good contrast.
+- Keep both pages aligned to the existing book spine and curvature animations you already implemented.
+
+5. Implementation details
+- Introduce a `Spread` type / interface if needed, or derive spreads from the existing posts array in a selector function.
+- Refactor the rendering so the book takes an array of spreads and uses `currentSpreadIndex` instead of `currentPageIndex`.
+- Return:
+  - Updated TypeScript/JSX for the Scrapbook book component,
+  - The mapping from posts → spreads,
+  - Any CSS tweaks necessary for the left and right page layouts.

@@ -1,0 +1,11 @@
+{
+  "buildCommand": "cd artifacts/tether && pnpm install && BASE_PATH=/ PORT=5173 pnpm run build",
+  "outputDirectory": "artifacts/tether/dist/public",
+  "framework": "vite",
+  "rewrites": [
+    {
+      "source": "/((?!assets/).*)",
+      "destination": "/index.html"
+    }
+  ]
+}

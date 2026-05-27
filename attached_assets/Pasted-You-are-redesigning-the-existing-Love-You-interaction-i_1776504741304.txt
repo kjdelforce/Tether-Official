@@ -1,0 +1,45 @@
+You are redesigning the existing “Love You” interaction into a super-premium Liquid Glass animation.
+
+Goals:
+- Keep the same trigger (button / action) and backend logic.
+- Completely upgrade the visual animation and motion when the sender taps “Love You”.
+- Make it feel like a living glass heart pulse that matches the rest of my Liquid Glass UI.
+
+Implement this:
+
+1. Visual core
+- Replace the current heart with a layered, Liquid Glass heart:
+  - Multiple layers: a soft glowing core, a glass outline, and tiny spark particles.
+  - Use my existing accent color as the main glow, with subtle warm/cool spill around it.
+- Put the heart inside a circular Liquid Glass capsule (like a floating orb), with strong blur and specular highlight.
+
+2. Send animation (timeline)
+- On tap:
+  - The heart orb briefly compresses (scale 0.9), then expands to ~1.15 with a bright flash.
+  - A radial light wave ripples out, fading quickly (300–400 ms).
+  - 4–6 small heart particles emit from the orb and drift upward, fading and blurring.
+- After the pulse:
+  - The orb shrinks slightly and settles back to resting scale with a soft breathing animation (very subtle).
+
+3. Motion & implementation
+- Use performant transforms (scale, translate, opacity) only.
+- Implement the animation either with:
+  - CSS keyframes, OR
+  - a small React animation library already in this project (e.g. Framer Motion) – pick the one that fits the codebase.
+- Encapsulate the visuals in a `<LoveYouSendAnimation />` component that:
+  - accepts props like `isSending`, `onFinished`, and optional `message`.
+  - runs the animation only when triggered, then calls `onFinished`.
+
+4. Liquid Glass integration
+- Make the heart orb a true Liquid Glass surface:
+  - blurred background, inner glow, and a moving highlight that shifts slightly when the orb scales.
+- Ensure blur levels, radii, and shadows reuse my existing Liquid Glass tokens so the animation looks consistent with the dock and cards.
+
+5. Accessibility
+- Respect `prefers-reduced-motion: reduce`:
+  - For those users, show a simple fade-in heart with a gentle scale, no particles, no long sequences.
+
+Return:
+- The new `<LoveYouSendAnimation />` React component.
+- CSS/animation code for the orb, heart, ripple, and particles.
+- A snippet showing how to integrate this component into the existing Love You button/flow.

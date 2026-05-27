@@ -1,0 +1,35 @@
+You are updating an existing bottom navigation dock in a React/HTML/CSS web app. 
+
+Goal: Make the dock visually match Apple’s "Liquid Glass" dock from iOS 16–17+ as closely as possible (not generic glassmorphism). Keep my existing layout and components, but upgrade ONLY the styling: CSS, variables, and minimal HTML wrapper changes if needed.
+
+Implement the dock as a floating, centered pill above the bottom edge with these rules:
+
+1. Dock container
+- Use a wide rounded pill: border-radius between 999px and 32px depending on height, but visually closer to iOS (very round ends).
+- Background should be mostly transparent white: something like rgba(255,255,255,0.15) over a dark background, or rgba(255,255,255,0.7) over a light background. Use a CSS variable so I can tune it.
+- Apply a strong backdrop-filter blur between 30px and 60px (no less than 30px).
+- Slight saturation boost behind the blur using backdrop-filter: saturate(1.3) or similar.
+- Add a very soft inner glow: inset box-shadow with white, very low opacity (0.08–0.12).
+- Add a subtle outer highlight stroke using a gradient border: top edge slightly brighter than the bottom edge.
+- Add a faint noise/grain overlay on the glass so it doesn’t look perfectly flat. This can be done via a pseudo-element ::before with a noise PNG/SVG and mix-blend-mode: overlay / soft-light at low opacity.
+
+2. Floating & depth
+- The dock should visually float above the background: add a large, very soft drop shadow underneath (blur 40–80px, low opacity, spread negative, positioned slightly below).
+- No harsh, dark shadows. Keep everything diffused and premium.
+
+3. Layout & content
+- Icons and labels stay vertically centered inside the dock.
+- Ensure spacing is generous so the dock feels airy: use gap and padding rather than squeezing items.
+- Use flexbox with even distribution; don’t change the order of my nav items.
+
+4. Implementation details
+- Use modern CSS only (no Tailwind classes unless they already exist in my project).
+- Place all reusable values into CSS variables at the top of the file, e.g.:
+  --dock-blur, --dock-bg, --dock-radius, --dock-shadow, --dock-noise-opacity.
+- Do NOT introduce JavaScript for the visual style. This step is about static appearance only.
+
+Return:
+- The updated HTML/JSX snippet for the dock (if necessary).
+- The complete CSS for the dock container, its inner noise effect, and any needed pseudo-elements.
+
+Focus on making the glass feel layered, bright, and soft, not like a single flat blur.

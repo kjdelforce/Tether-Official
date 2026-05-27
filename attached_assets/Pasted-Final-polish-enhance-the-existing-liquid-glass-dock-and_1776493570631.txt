@@ -1,0 +1,29 @@
+Final polish: enhance the existing liquid glass dock and active pill with subtle light, refraction, and motion effects. Do not change my layout or colors, just layer on premium micro-interactions.
+
+1. Moving light sheen
+- Add a very subtle animated gradient sheen that moves across the active pill when the user hovers or when the active tab changes.
+- Implementation idea: a ::before layer with a diagonal white-to-transparent gradient that animates its translateX or background-position over 600–800ms.
+- The effect must be low opacity and slow enough to feel like light refraction, not a loud shimmer.
+
+2. Parallax / depth
+- When the user moves the mouse over the dock (desktop), allow the whole dock to shift 1–3px in the opposite direction of the cursor, giving a parallax “floating” feel.
+- Implement this with a tiny transform: translate3d, wired via JavaScript that listens to mousemove on the dock container, but clamp values so it never moves more than a few pixels.
+- Ensure this motion respects reduced-motion preferences: if prefers-reduced-motion is set, disable this effect.
+
+3. Icon hover micro-interactions
+- On hover, each dock icon should scale to around 1.05–1.1 and add a faint under-shadow or glow, without breaking layout.
+- Transitions should be 150–200ms with ease-out; no bounce.
+
+4. Performance & accessibility
+- Use will-change: transform and backface-visibility where appropriate for smoother animation.
+- Ensure contrast between text/icons and background meets at least WCAG AA in both active and inactive states.
+- Names for CSS classes and variables should stay semantic (no random suffixes).
+
+Return:
+- Any small JS snippet needed for the parallax effect, wired to a generic .dock element.
+- The additional CSS for:
+  - the animated sheen layer on the active pill,
+  - refined hover/focus states for icons,
+  - reduced motion handling with @media (prefers-reduced-motion: reduce).
+
+Keep everything elegant, minimal, and in line with Apple’s subtle motion, not flashy UI.

@@ -1,0 +1,47 @@
+Now apply the Liquid Glass system to ALL major surfaces on this screen.
+
+Constraints:
+- Keep the current layout and content exactly the same.
+- Only update CSS class names, wrappers, and styling so that everything reads as a single Liquid Glass design language.
+
+For this screen:
+
+1. Section headers / top bar
+- Convert the top app bar and key section headers (e.g. page titles, “Games”, “Intimacy”) into .lg-surface-secondary elements:
+  - subtle glass bar that floats above the background
+  - low-opacity tint using --lg-glass-secondary
+  - small blur (weak) and soft shadow
+  - slight top-edge highlight to match the dock.
+
+2. Primary cards (feature modules like “Love You”, “Couples Corner”, “Spicy Stats”)
+- Wrap each primary card in .lg-surface-primary and:
+  - increase blur vs headers (medium to strong)
+  - make border-radius align with the dock and other capsules (use lg-radius tokens)
+  - add a faint inner glow plus a narrow outer highlight on the top edge.
+- If cards have bright inner gradients (e.g. red/orange/blue), keep those but slightly desaturate and darken them so text remains readable on top of glass.
+- Ensure only ONE glass layer per Z-depth: avoid glass-on-glass-on-glass inside a card; inner elements should mostly be solid or semi-solid.
+
+3. Secondary items (chips, tags, toggles, small info rows)
+- Turn badges like “PRIVATE”, “SOON”, tiny pills, and toggles into .lg-surface-chip:
+  - tiny capsules with a high blur but low opacity
+  - clear accent borders or icon colors for legibility.
+
+4. Overlays and “focused” states
+- For any overlay or modal (for example, cards that appear above others):
+  - dim the background slightly with a gradient or fade,
+  - push the overlay card’s blur and brightness above everything else (strong blur, higher opacity tint),
+  - add a prominent but soft drop shadow to emphasize depth.
+
+5. Smooth transitions
+- Add consistent transitions for all glass surfaces:
+  - transition: background-color, box-shadow, transform, filter 180–220ms ease-out.
+- On hover/focus, slightly increase brightness and reduce blur (~10%) to simulate glass “thickening” and catching more light.
+
+Implementation rules:
+- Use the .lg-surface-* classes created earlier instead of duplicating style rules.
+- Replace one-off hard-coded colors and radii with the token variables.
+- Keep accessibility in mind: check contrast of all important text and icons.
+
+Return:
+- Updated JSX/HTML snippets showing a main screen’s structure with the new classes.
+- The refined CSS for .lg-surface-primary, .lg-surface-secondary, and .lg-surface-chip with any adjustments you had to make to work in this layout.

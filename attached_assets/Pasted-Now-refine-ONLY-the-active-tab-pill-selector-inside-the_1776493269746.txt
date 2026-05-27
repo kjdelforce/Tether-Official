@@ -1,0 +1,35 @@
+Now refine ONLY the active tab / pill selector inside the dock to feel like Apple’s iOS Liquid Glass active state.
+
+Constraints: keep my current nav structure and icons. Modify the CSS (and at most add a wrapper element or pseudo-element for the active item).
+
+Active pill requirements:
+
+1. Shape & layering
+- The active tab should be a brighter, more intense pill sitting ON TOP of the main dock glass (z-depth).
+- Use a higher blur than the main dock (e.g. 1.5x the dock blur) via backdrop-filter or filter if possible.
+- Background: semi-transparent white with more brightness and contrast than the dock, e.g. rgba(255,255,255,0.9) over dark backgrounds.
+- Corners should be very rounded, visually similar to the iOS Music/Apple TV tab bar “bubble.”
+
+2. Edge highlights & inner depth
+- Add a soft inner shadow (inset box-shadow) around the inside perimeter, very subtle, to suggest thickness.
+- Top edge should have a reflective highlight stripe (a linear gradient or ::before element) that is slightly brighter than the main fill.
+- Bottom edge slightly darker for depth.
+
+3. Icon & label treatment
+- The active icon and text should get a clear color treatment (e.g. solid accent color) and slightly stronger contrast vs background.
+- Add a subtle glow on press/active using box-shadow that quickly fades.
+- Ensure icon and label stay perfectly aligned vertically.
+
+4. Interaction
+- Add a smooth 200–260ms transition for transform, box-shadow, and background changes.
+- On hover (desktop), scale the active pill by about 1.03–1.05 and slightly adjust the highlight to give a liquid feel.
+- On click/tap, add a very short “squish” animation: scaleX slightly > 1, scaleY slightly < 1 then settle back (using a cubic-bezier easing similar to spring).
+
+Implementation:
+- Use CSS classes like .dock-item and .dock-item--active (or similar) and show how they integrate with my existing JSX.
+- No heavy JavaScript animations; use CSS transitions and keyframes only.
+- Keep all magic numbers as CSS variables where reasonable, e.g. --active-pill-scale, --active-pill-blur.
+
+Return:
+- Updated JSX/HTML for one nav item showing the active state.
+- Full CSS for the active pill, hover/active states, and any pseudo-elements used for highlights.

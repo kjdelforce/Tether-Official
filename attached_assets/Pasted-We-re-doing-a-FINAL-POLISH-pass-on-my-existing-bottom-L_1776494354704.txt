@@ -1,0 +1,51 @@
+We’re doing a FINAL POLISH pass on my existing bottom Liquid Glass dock. 
+Do NOT change the layout, spacing, or JS – only refine the CSS of:
+- the main dock container
+- the active "Home" pill
+- the left edge of the active pill
+
+Target: match Apple’s iOS 26 Liquid Glass tab bar look as closely as possible.
+
+Tweak the styles as follows:
+
+1. Dock container (overall bar)
+- Increase the contrast between top and bottom edges:
+  - Add a subtle top-edge highlight band using a linear-gradient or ::before pseudo-element,
+    about 10–15% brighter than the dock fill.
+  - Make the bottom edge very slightly darker for depth.
+- Slightly increase blur (dock blur variable) so the background feels softer and more “melted”.
+- Keep the floating soft shadow BUT make it:
+  - wider
+  - lower opacity
+  - a bit further below the bar
+  so it feels like a gentle glow, not a tight drop shadow.
+
+2. Active pill (Home)
+- Make the active pill obviously brighter than the dock:
+  - bump its background alpha up (more opaque white),
+  - slightly increase its internal blur vs the dock.
+- Add a subtle inner shadow (inset box-shadow) around the edges for thickness.
+- Add a dedicated top highlight strip:
+  - a ::before element with a white-to-transparent gradient, 
+    clipped to the top 30–40% of the pill, very low opacity.
+- Ensure the left and right ends are as round as possible (border-radius close to the pill height).
+
+3. “Liquid” edge / refraction on the left side of the active pill
+- Add a new ::after pseudo-element on the active pill that creates a soft “liquid” halo along the outer left edge:
+  - use a multicolor gradient (very subtle red → yellow → blue, low opacity),
+  - blur it heavily,
+  - offset it slightly outside the pill to mimic light refraction.
+- Keep this effect extremely soft so it reads as premium, not neon.
+
+4. Motion & interaction (small adjustments only)
+- On hover/active for the active pill:
+  - scale it to about 1.03,
+  - slightly increase the brightness of the top highlight,
+  - animate over ~180–220ms with a smooth, spring-like cubic-bezier.
+- Icons and label inside the active pill should remain perfectly centered and keep their current accent color.
+
+Implementation rules:
+- Only touch the CSS for the existing dock and active item classes.
+- Use pseudo-elements ::before and ::after for the new highlight and rainbow edge.
+- Put any new values into CSS variables (e.g. --dock-top-highlight, --active-rainbow-opacity) at the top.
+- Return the complete, updated CSS plus a minimal snippet of the HTML/JSX showing which classes / states are used for the active item.

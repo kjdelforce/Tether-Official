@@ -1,0 +1,61 @@
+You are refactoring this web app’s visual system to use an Apple-style “Liquid Glass” design across the entire UI.
+
+Goals:
+- Keep ALL existing layout, routes, and content.
+- Only change design tokens, CSS variables, and component styling.
+- Make the app feel like a cohesive Liquid Glass environment similar to iOS 26 (navigation bars, cards, overlays, and controls). 
+
+Do this step-by-step:
+
+1. Introduce a global design token layer
+- Create a :root or theme file defining CSS variables for:
+  --lg-bg-gradient (app background radial/linear gradient)
+  --lg-glass-primary (main card glass color)
+  --lg-glass-secondary (secondary / subtle glass)
+  --lg-glass-highlight (specular highlight color)
+  --lg-border-radius-xs/sm/md/lg/xl (mapped to your current sizes)
+  --lg-blur-weak / -medium / -strong
+  --lg-shadow-soft / -elevated (for floating glass)
+  --lg-text-primary / -secondary / -muted
+  --lg-accent-primary / -danger / -success (use my existing brand colors)
+- Wire the existing components to use these tokens instead of hard-coded values.
+
+2. App background
+- Replace any flat background with a premium, dark gradient suitable for Liquid Glass:
+  - Slightly vignetted corners, with subtle warm and cool color mixing (e.g. deep navy + wine red).
+- Ensure content scrolls OVER this background while glass surfaces sit between content and background.
+
+3. Surface hierarchy (very important)
+- Define three surface tiers:
+  1) Base background (no glass, just gradient).
+  2) Primary glass surfaces: main cards, large panels, key CTAs.
+  3) Secondary glass surfaces: headers, chips, small info modules.
+
+- For each tier, define a reusable class:
+  .lg-surface-primary
+  .lg-surface-secondary
+  .lg-surface-chip
+
+Each should specify:
+  - background: semi-transparent tint using --lg-glass-primary / secondary
+  - backdrop-filter: blur(--lg-blur-weak|medium|strong) and saturate(1.2–1.4)
+  - border-radius from the token set
+  - a subtle inner glow (inset box-shadow) to avoid “flat frost”
+  - a soft outer shadow using --lg-shadow-soft / -elevated to create depth
+
+4. Typography & color
+- Ensure all text on glass surfaces meets at least WCAG AA contrast against its background.
+- Map existing font sizes and weights into a simple scale:
+  Heading, Title, Body, Detail, Caption.
+- Keep display fonts for headings if I already use them, but make body text clean and highly readable.
+
+5. Implementation
+- Update the global styles file and one example screen to show:
+  - background using --lg-bg-gradient
+  - 1–2 cards styled with .lg-surface-primary
+  - a secondary toolbar/banner using .lg-surface-secondary
+
+Return:
+- The new design-token section (CSS variables).
+- Updated global CSS classes for the Liquid Glass surfaces.
+- A small JSX/HTML snippet showing how to apply these classes to my existing components.

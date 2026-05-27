@@ -1,0 +1,38 @@
+You are redesigning my existing Scrapbook screen to become a premium Liquid Glass “book mode” when the phone is in landscape.
+
+Goals:
+- In portrait, keep the current Scrapbook layout (with any cards you already see).
+- In landscape, transition into a centered, two-page book view with a hard spine and soft Liquid Glass pages.
+
+Implement the following:
+
+1. Book container
+- Create a responsive `.scrapbook-book` container that is:
+  - horizontally centered,
+  - uses a 2:1 width:height ratio,
+  - has a subtle 3D perspective (via `perspective` on the parent).
+- Apply a dark, rich gradient background behind the book (consistent with my app’s existing gradient).
+- The book itself should feel like a semi‑transparent hard cover:
+  - wide pill / rounded-rectangle shape with border-radius 32–40px,
+  - strong backdrop-filter blur (30–50px) and saturate(1.3),
+  - soft outer shadow and subtle top-edge highlight to match my Liquid Glass dock.
+
+2. Left and right pages
+- Inside `.scrapbook-book`, create two `.scrapbook-page` elements for left and right pages.
+- Each page:
+  - slightly inset from the book edges (padding all around),
+  - uses a softer glass look than the cover: lighter tint, lower shadow.
+  - has a vertical gradient to suggest the spine side is darker and the outer edge is brighter.
+- Add a narrow vertical spine between pages:
+  - a gradient bar that is slightly darker and has a subtle inner shadow.
+
+3. Page content styling
+- Existing scrapbook items (photos, notes, etc.) should be arranged within the left/right pages:
+  - Ensure content respects a margin so the page edge never feels crowded.
+  - Use Liquid Glass chips for tags/captions, keeping typography consistent with the rest of the app.
+
+4. Portrait → landscape transition
+- Detect orientation (using CSS media queries or a small JS hook) and:
+  - In landscape: show `.scrapbook-book` and hide the old single-column layout.
+  - In portrait: show the original layout and hide `.scrapbook-book`.
+- Add a short crossfade/scale animation between st

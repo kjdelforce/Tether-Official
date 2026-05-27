@@ -1,0 +1,40 @@
+Now that the app uses Liquid Glass visuals, enhance motion and lighting across all surfaces for a premium feel.
+
+Constraints:
+- Keep all interactions subtle and performant.
+- Respect prefers-reduced-motion and prefers-reduced-transparency.
+
+1. Light response on glass surfaces
+- For .lg-surface-primary and .lg-surface-secondary:
+  - Add a soft specular highlight band using ::before, aligned to the top edge, with a white-to-transparent gradient and very low opacity.
+  - On hover/focus/active, gently shift this band up/down or left/right by a few pixels to simulate changing light.
+- Implement this entirely in CSS (no JS) using transitions on opacity and transform.
+
+2. Global hover/press behavior
+- Define a shared interaction pattern for all tappable glass elements (cards, pills, prominent buttons):
+  - hover: scale(1.02), slightly increase brightness, slightly decrease blur.
+  - active/pressed: very quick “squish” (scaleX 1.02, scaleY 0.98) with a cubic-bezier that feels springy but controlled.
+- Ensure this pattern is opt-in via a class like .lg-interactive so non-interactive surfaces stay static.
+
+3. Parallax & floating behavior
+- For the bottom dock and any floating header bars:
+  - add a tiny parallax motion tied to cursor movement (desktop only) using a small JS utility:
+    - listens to mousemove,
+    - updates transform: translate3d by max ±3px,
+    - throttled for performance.
+  - wrap this in a prefers-reduced-motion check and disable if the user has it enabled.
+
+4. Accessibility & system alignment
+- Implement @media (prefers-reduced-motion: reduce) and (prefers-reduced-transparency: reduce):
+  - reduce or remove blur and heavy shadows,
+  - replace glass with darker, more opaque solids while keeping the same shapes and layout.
+- Ensure focus states for keyboard users are clearly visible over glass (e.g. bright outline or glow).
+
+Implementation:
+- Add a shared .lg-interactive class and apply it to interactive cards, dock items, key buttons.
+- Provide the JS snippet that powers parallax on elements with data-lg-parallax or a .lg-parallax class.
+- Update CSS to show the complete motion and highlight treatment.
+
+Return:
+- The JS utility function and how to attach it in this app.
+- The new CSS for specular highlights, hover/press animations, and reduced-motion / reduced-transparency fallbacks.

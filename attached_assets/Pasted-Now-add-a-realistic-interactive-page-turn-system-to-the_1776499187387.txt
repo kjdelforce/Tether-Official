@@ -1,0 +1,60 @@
+Now add a realistic, interactive page-turn system to the Scrapbook “book mode” so pages behave like a physical book.
+
+Goals:
+- When the user swipes, taps, or tap‑and‑drags a page corner, it should curl and flip like real paper.
+- The interaction must feel smooth, springy, and premium, not like a basic slide animation.
+
+Implementation details:
+
+1. Page stack & structure
+- Represent pages as an array of page components (left/right pairs).
+- Each individual page element should be absolutely positioned on top of the book and layered using z-index so that:
+  - the current right page can flip onto the left stack when going forward,
+  - the current left page can flip back from the left stack when going backward.
+
+2. Interaction model
+- Support:
+  - swipe left/right gestures,
+  - tap on outer corners,
+  - tap‑and‑drag from the right or left outer edge.
+- Use pointer/touch events to track:
+  - drag start position,
+  - current drag position,
+  - drag velocity on release.
+- While dragging, update a page’s rotation and curvature in real time.
+
+3. Visual page‑curl effect
+- For each flipping page, apply a 3D transform using CSS:
+  - `transform-origin` at the vertical page edge closest to the spine.
+  - `transform: rotateY(angle) translateZ(depth)` with `perspective` set on the parent.
+- Simulate curl by:
+  - adding a gradient overlay that shifts as the angle changes (bright highlight on one side, shadow on the other),
+  - darkening the “back” side of the page as it flips.
+- Add subtle bend by changing the gradient and shadow based on drag distance or angle (no heavy WebGL – pure CSS/JS).
+
+4. Animation / physics
+- When the user releases the drag:
+  - If drag distance or velocity exceeds a threshold, complete the page turn with a smooth spring animation to the fully-turned state.
+  - Otherwise, animate the page back to its starting position.
+- Use a small physics helper (spring or easing function) rather than linear easing, so the motion feels like a physical page snapping into place.
+- Ensure the animation duration is roughly 350–600ms and frame rate stays high.
+
+5. Controls & edge cases
+- Add left/right navigation arrows or indicators that mirror the page turn behavior when clicked.
+- Disable page turns at the beginning or end of the book.
+- Keep page indices in a single source of truth (e.g. `currentSpreadIndex`) so state never desyncs from the visual stack.
+
+6. Accessibility & fallbacks
+- Respect `prefers-reduced-motion: reduce`:
+  - For those users, replace the 3D curl with a simple crossfade or horizontal slide between spreads.
+- Ensure keyboard users can navigate pages using left/right arrow keys or buttons with clear focus outlines.
+
+Implementation constraints:
+- Use idiomatic React/TypeScript (or the stack this file is using).
+- Only add a small, focused page-turn hook/utility (e.g. `usePageTurn`) plus a `PageTurnLayer` component that wraps the pages.
+- Do NOT introduce heavy external libraries unless absolutely required; first attempt the effect using CSS 3D transforms and requestAnimationFrame-based animation.
+
+Return:
+- The new `PageTurnLayer` (or similar) component code.
+- The hook or utility that manages pointer events and page angle.
+- The CSS needed for the page curl gradients, shadows, and 3D transforms.

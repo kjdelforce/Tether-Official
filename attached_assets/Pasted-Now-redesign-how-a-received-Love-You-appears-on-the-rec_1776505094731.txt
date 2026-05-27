@@ -1,0 +1,66 @@
+Now redesign how a received “Love You” appears on the receiver’s device so it feels cinematic and premium.
+
+Goals:
+- When the receiver opens the app with a new Love You, show a full-screen Liquid Glass reveal before settling into the normal UI.
+- Make it feel like a glass heart message arriving from their partner.
+
+Implement the following sequence:
+
+1. Entry state
+- When the app detects an unread Love You:
+  - Dim and slightly blur the existing UI in the background (using my Liquid Glass blur tokens).
+  - Overlay a full-screen `LoveYouOverlay` component.
+- The overlay should show:
+  - A large Liquid Glass heart orb in the center,
+  - A short line like “Love from [partner name]”,
+  - Optional text of the message.
+
+2. Arrival animation (timeline)
+- Start with a small point of light near the bottom center (aligned with the dock).
+- Animate this point along a curved path up to the center of the screen:
+  - scale from 0 to ~0.6 while moving,
+  - leave a faint trail or streak behind (blurred gradient).
+- As it reaches the center, the point “inflates” into the heart orb:
+  - quick scale-up + opacity increase,
+  - glass material forms with a liquid-like ripple inside.
+- The orbiting particles:
+  - 6–10 tiny hearts or light specks orbit around the main orb for 1–2 seconds then gently fade.
+
+3. Heart pulse & copy
+- Once the orb is in place:
+  - make it pulse with a slow, deep heartbeat (scale 1 → 1.05 → 1, 800–1000 ms, ease-in-out).
+  - fade in the text below with a slight upward motion (translateY + opacity).
+- Allow the user to tap either:
+  - the heart orb, or
+  - a “Open in Love You” / “View message” button below
+  to dismiss the overlay and scroll/focus to the Love You module on the main screen.
+
+4. Liquid Glass polish
+- Treat the orb and overlay as true Liquid Glass:
+  - backdrop-filter blur, strong specular highlight, and subtle color refraction near the edges.
+  - Ensure the glow spills softly into the shadow area (no harsh edges).
+- Slightly adjust the dock and cards behind:
+  - while the overlay is visible, reduce their brightness/contrast so the orb is clearly the focus.
+
+5. Implementation details
+- Create a `LoveYouOverlay` component that:
+  - takes props like `senderName`, `message`, `onDismiss`.
+  - shows only when there is an unread Love You.
+  - handles escape key / back gesture to close.
+- Use performant animation techniques:
+  - transforms & opacity,
+  - requestAnimationFrame or your existing animation library.
+- Provide a simple state machine (e.g. “idle → incoming → pulsing → dismissed”) so logic stays clear.
+
+6. Accessibility & motion
+- For `prefers-reduced-motion: reduce`, replace:
+  - the path animation and particles with a simple fade-in of the overlay and heart,
+  - a short “bump” scale on the heart (1 → 1.04 → 1).
+- Ensure voice-over / screen readers announce:
+  - “New Love You from [name]”,
+  - give focus to the primary action button.
+
+Return:
+- The new `LoveYouOverlay` component and any hook used to detect unread Love You messages.
+- The animation code (CSS keyframes or library-based) implementing the arrival path, heart pulse, and particle orbit.
+- A snippet showing how the overlay wraps the Home / Love You screen.
