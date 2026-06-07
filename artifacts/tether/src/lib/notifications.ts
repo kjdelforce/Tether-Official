@@ -31,26 +31,43 @@ export async function registerServiceWorker(): Promise<ServiceWorkerRegistration
   }
 }
 
+/**
+ * Request notification permission.
+ * MUST be called from a direct user-gesture handler on iOS (tap/click).
+ * Returns true if granted.
+ */
+export async function requestNotificationPermission(): Promise<boolean> {
+  if (!('Notification' in window)) return false;
+  if (Notification.permission === 'granted') return true;
+  if (Notification.permission === 'denied') return false;
+  // On iOS 16.4+ the permission prompt must fire synchronously inside a
+  // user-gesture handler. Awaiting it here is fine as long as the caller
+  // is invoked from an onClick / onTouchEnd handler.
+  const result = await Notification.requestPermission();
+  return result === 'granted';
+}
+
 export async function setupPushNotifications(
   registration: ServiceWorkerRegistration,
   userId: string,
   tetherId: string,
 ): Promise<void> {
   if (!('PushManager' in window) || !VAPID_PUBLIC_KEY) return;
-
-  const permission = Notification.permission === 'granted'
-    ? 'granted'
-    : await Notification.requestPermission();
-  if (permission !== 'granted') return;
+  if (Notification.permission !== 'granted') return;
 
   try {
-    let subscription = await registration.pushManager.getSubscription();
-    if (!subscription) {
-      subscription = await registration.pushManager.subscribe({
-        userVisibleOnly: true,
-        applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY),
-      });
+    // Always unsubscribe stale subscriptions first so that a re-added PWA
+    // gets a fresh endpoint. iOS can return an expired subscription from
+    // getSubscription() after the app is removed and re-added to the home screen.
+    const existing = await registration.pushManager.getSubscription();
+    if (existing) {
+      try { await existing.unsubscribe(); } catch { /* ignore */ }
     }
+
+    const subscription = await registration.pushManager.subscribe({
+      userVisibleOnly: true,
+      applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY),
+    });
 
     const apiUrl = getApiUrl();
     const resp = await fetch(`${apiUrl}/api/push/subscribe`, {
