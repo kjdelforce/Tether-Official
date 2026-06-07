@@ -699,11 +699,16 @@ function AppShell() {
     if (!profile || !tether) return;
     let cancelled = false;
     (async () => {
+      // Register the SW on mount so it is ready to receive pushes.
+      // Permission is only requested from a user-gesture (ProfilePage button)
+      // because iOS silently rejects Notification.requestPermission() when
+      // called outside of a direct tap/click handler.
       const reg = await registerServiceWorker();
       if (cancelled || !reg) return;
-      // Always attempt — setupPushNotifications handles the permission prompt
-      // internally and is a no-op if the user denies or the API is unavailable.
-      await setupPushNotifications(reg, profile.id, tether.id);
+      // Only re-subscribe if permission was already granted in a prior session.
+      if (Notification.permission === 'granted') {
+        await setupPushNotifications(reg, profile.id, tether.id);
+      }
     })();
     return () => { cancelled = true; };
   }, [profile, tether]);

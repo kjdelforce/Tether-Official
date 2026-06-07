@@ -7,7 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { haptic } from "@/lib/haptics";
 import { PullToRefresh } from "@/components/PullToRefresh";
 import { isKyle, getSexBoxArchive, type SexBoxEntry } from "@/lib/naughtyBox";
-import { registerServiceWorker, setupPushNotifications } from "@/lib/notifications";
+import { registerServiceWorker, setupPushNotifications, requestNotificationPermission } from "@/lib/notifications";
 import { playTap, playSave, playModalOpen, playModalClose } from "@/lib/sounds";
 import highEmojiImg from "@assets/image_1776256634422.png";
 import { Avatar3D, preloadAvatar } from "@/components/Avatar3D";
@@ -1545,7 +1545,7 @@ export default function ProfilePage() {
 
   useEffect(() => { load(); }, [load]);
 
-  // ── Avatar upload ────────────────────────────────────────────────
+  // ── Avatar upload ──────────────────��─────────────────────────────
   async function handleAvatarChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file || !profile) return;
@@ -2016,20 +2016,32 @@ export default function ProfilePage() {
               onClick={async () => {
                 haptic("light"); playTap();
                 try {
+                  // Step 1: request permission synchronously from this tap handler.
+                  // iOS 16.4+ requires requestPermission() to be called directly
+                  // inside a user-gesture — doing it from useEffect or setTimeout
+                  // causes the prompt to be silently blocked.
+                  const granted = await requestNotificationPermission();
+
+                  if (!granted) {
+                    if (Notification.permission === "denied") {
+                      toast({ title: "Blocked by browser", description: "Go to Settings → Notifications → find Tether and enable notifications.", variant: "destructive" });
+                    } else {
+                      toast({ title: "Permission dismissed", description: "Tap the button again and choose Allow when prompted." });
+                    }
+                    return;
+                  }
+
+                  // Step 2: register the SW (or get the existing one).
                   const reg = await registerServiceWorker();
                   if (!reg) {
                     toast({ title: "Not supported", description: "This browser doesn't support notifications.", variant: "destructive" });
                     return;
                   }
+
+                  // Step 3: subscribe / re-subscribe and send to server.
                   await setupPushNotifications(reg, profile.id, tether.id);
-                  if (Notification.permission === "granted") {
-                    haptic("success"); playSave();
-                    toast({ title: "Notifications re-enabled ✓", description: "Push subscription saved." });
-                  } else if (Notification.permission === "denied") {
-                    toast({ title: "Blocked by browser", description: "Open your device Settings → find this app → enable Notifications.", variant: "destructive" });
-                  } else {
-                    toast({ title: "Permission dismissed", description: "Tap again and choose Allow when prompted." });
-                  }
+                  haptic("success"); playSave();
+                  toast({ title: "Notifications enabled", description: "You'll receive push notifications from Tether." });
                 } catch {
                   toast({ title: "Something went wrong", variant: "destructive" });
                 }

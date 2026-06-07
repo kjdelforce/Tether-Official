@@ -1,6 +1,6 @@
 // Tether Service Worker — handles Web Push notifications
 
-const CACHE_NAME = 'tether-v1';
+const CACHE_NAME = 'tether-v2';
 
 self.addEventListener('install', () => {
   self.skipWaiting();
@@ -24,8 +24,8 @@ self.addEventListener('push', (event) => {
   const title = data.title ?? '💓 Tether';
   const options = {
     body: data.body ?? 'Someone is thinking of you 💙',
-    icon: './icon-192.png',
-    badge: './icon-192.png',
+    icon: '/icon-192.png',
+    badge: '/icon-192.png',
     vibrate: [200, 100, 200, 100, 200],
     tag: data.tag ?? 'tether-nudge',
     renotify: true,
