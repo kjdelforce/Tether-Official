@@ -21,6 +21,7 @@ const SUPABASE_SERVICE_KEY  = process.env["SUPABASE_SERVICE_KEY"]  ?? process.en
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
 
+
 // ── Helper: send a push to every subscription belonging to the partner ─────
 async function notifyPartner(
   tetherId: string,
