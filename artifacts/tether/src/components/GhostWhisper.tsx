@@ -62,10 +62,12 @@ export function GhostCloudButton({ onPress }: { onPress: () => void }) {
 export function GhostWhisperCompose({
   tetherId,
   senderId,
+  senderName,
   onClose,
 }: {
   tetherId: string;
   senderId: string;
+  senderName?: string;
   onClose: () => void;
 }) {
   const [text,    setText]   = useState("");
@@ -100,7 +102,7 @@ export function GhostWhisperCompose({
     setSent(true);
     haptic("success");
     import("@/lib/notifications").then(({ sendWhisperNotification }) => {
-      sendWhisperNotification(tetherId, senderId).catch(() => {});
+      sendWhisperNotification(tetherId, senderId, senderName).catch(() => {});
     });
     setTimeout(onClose, 1100);
   };
