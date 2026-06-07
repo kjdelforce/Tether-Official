@@ -406,6 +406,7 @@ export default function HomePage({ together: togetherProp, onNavigateToCapsules 
             key="ghost-compose"
             tetherId={tether.id}
             senderId={profile.id}
+            senderName={profile.full_name}
             onClose={() => setComposeOpen(false)}
           />
         )}
@@ -791,7 +792,7 @@ function NaughtyQuestionSection({
       {/* Header */}
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 7 }}>
-          <span style={{ fontSize: "1.1rem" }}>🔥</span>
+          <span style={{ fontSize: "1.1rem" }}>��</span>
           <span style={{
             fontFamily: "'Playfair Display', serif",
             fontSize: "0.82rem",
